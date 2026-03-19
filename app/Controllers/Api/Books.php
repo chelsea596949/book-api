@@ -35,6 +35,7 @@ class Books extends BaseController
 
         $perPage = $this->request->getGet('perPage') ?? 10;
         $page = $this->request->getGet('page') ?? 1;
+        $authorName = $this->request->getGet('authorName');
 
         if ($page < 0) {
             return $this->failValidationErrors(['page' => 'Page number must be greater than 0']);
@@ -44,7 +45,7 @@ class Books extends BaseController
         }
 
         // Otherwise, fetch all records
-        $books = $model->withAuthorInfo();
+        $books = $model->withAuthorInfo($authorName);
 
         return $this->paginate($books, $perPage, transformWith: BookTransformer::class);
     }

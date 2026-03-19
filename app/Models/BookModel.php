@@ -44,10 +44,16 @@ class BookModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function withAuthorInfo()
+    public function withAuthorInfo(?string $authorName): self
     {
-        return $this
-            ->select('books.*, authors.name as author_name')
-            ->join('authors', 'books.author_id = authors.id');
+        if($authorName) {
+            return $this
+                ->select('books.*, authors.name as author_name')
+                ->join('authors', 'books.author_id = authors.id AND authors.name = '.$this->db->escape($authorName));
+        }else {
+            return $this
+                ->select('books.*, authors.name as author_name')
+                ->join('authors', 'books.author_id = authors.id');
+        }
     }
 }
