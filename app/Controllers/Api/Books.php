@@ -17,7 +17,7 @@ class Books extends BaseController
      *    and
      * GET /api/books/{id}
      */
-    public function getIndex(?int $id = null): ResponseInterface
+    public function getIndex(?int $id=null): ResponseInterface
     {
         $model       = model('BookModel');
         $transformer = new BookTransformer();
@@ -33,10 +33,20 @@ class Books extends BaseController
             return $this->respond($transformer->transform($book));
         }
 
+        $perPage = $this->request->getGet('perPage') ?? 10;
+        $page = $this->request->getGet('page') ?? 1;
+
+        if ($page < 0) {
+            return $this->failValidationErrors(['page' => 'Page number must be greater than 0']);
+        }
+        if ($perPage < 0) {
+            return $this->failValidationErrors(['perPage' => 'Per page number must be greater than 0']);
+        }
+
         // Otherwise, fetch all records
         $books = $model->withAuthorInfo();
 
-        return $this->paginate($books, 20, transformWith: BookTransformer::class);
+        return $this->paginate($books, $perPage, transformWith: BookTransformer::class);
     }
 
      /**
