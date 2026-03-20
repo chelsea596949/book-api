@@ -52,7 +52,7 @@ class BookModel extends Model
 
     public function filterAuthorName(?string $name): self
     {
-        if ($name) {
+        if($name) {
             $this->where('authors.name', $name);
         }
 
@@ -61,10 +61,18 @@ class BookModel extends Model
 
     public function filterSlug(?string $slug): self
     {
-        if ($slug) {
+        if($slug) {
             $this->like('books.slug', $slug);
         }
 
+        return $this;
+    }
+
+    public function sortBy(?string $sort, ?string $direction='ASC'): self
+    {
+        if($sort) {
+            $this->orderBy($sort, strtoupper($direction));
+        }
         return $this;
     }
 }

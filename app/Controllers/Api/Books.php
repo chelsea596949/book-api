@@ -37,6 +37,8 @@ class Books extends BaseController
         $page = $this->request->getGet('page') ?? 1;
         $authorName = $this->request->getGet('authorName');
         $slug = $this->request->getGet('slug');
+        $sort = $this->request->getGet('sort') ?? 'id';
+        $direction = $this->request->getGet('direction') ?? 'asc';
 
         if ($page < 0) {
             return $this->failValidationErrors(['page' => 'Page number must be greater than 0']);
@@ -49,7 +51,8 @@ class Books extends BaseController
         $books = $model
         ->withAuthorInfo()
         ->filterAuthorName($authorName)
-        ->filterSlug($slug);
+        ->filterSlug($slug)
+        ->sortBy($sort, $direction);
 
         return $this->paginate($books, $perPage, transformWith: BookTransformer::class);
     }
