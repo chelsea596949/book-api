@@ -24,22 +24,30 @@ class BookSeeder extends Seeder
 
         $authorsByName = array_column($authors, 'id', 'name');
 
+        $now = date('Y-m-d H:i:s');
+
         // Define books with author references
         $books = [
             [
-                'title'     => 'Dune',
+                'title' => 'Dune',
                 'author_id' => $authorsByName['Frank Herbert'],
-                'year'      => 1965,
+                'year' => 1965,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title'     => 'Neuromancer',
                 'author_id' => $authorsByName['William Gibson'],
                 'year'      => 1984,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
             [
                 'title'     => 'The Left Hand of Darkness',
                 'author_id' => $authorsByName['Ursula K. Le Guin'],
                 'year'      => 1969,
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         ];
 
