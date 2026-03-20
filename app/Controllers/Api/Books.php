@@ -100,18 +100,43 @@ class Books extends BaseController
 
         $rules = [
             'title'     => 'required|string|max_length[255]',
-            'author_id' => 'required|integer|is_not_unique[authors.id]',
+            'author_name' => 'required|string|max_length[255]',
             'year'      => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
+            'price'     => 'required|numeric|greater_than_equal_to[0]',
         ];
 
-        if (! $this->validate($rules)) {
+        if(!$this->validate($rules)) {
             return $this->failValidationErrors($this->validator->getErrors());
         }
+        
+        $authorModel = model('AuthorModel');
+        $authorName = $data['author_name'];
+        $author = $authorModel->where('name', $authorName)->first();
 
-        $model = model('BookModel');
-        $model->insert($data);
+        // 1. 找 author
+        $author = $authorModel
+                ->where('name', $authorName)
+                ->first();
 
-        $newBook = $model->withAuthorInfo()->find($model->insertID());
+        // 2. 不存在就新增
+        $authorId = 1;
+        if (!$author) {
+            $authorId = $authorModel->insert([
+                'name' => $authorName
+            ]);
+        } else {
+            $authorId = $author['id'];
+        }
+
+        $data['slug'] = url_title($data['title'], '-', true);
+        $data['author_id'] = $authorId;
+        unset($data['author_name']);
+
+        $bookModel = model('BookModel');
+
+        $bookModel->insert($data);
+
+        $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
         return $this->respondCreated((new BookTransformer())->transform($newBook));
     }
