@@ -23,38 +23,69 @@ class Books extends BaseController
         $transformer = new BookTransformer();
 
         // If an ID is provided, fetch a single record
-        if ($id !== null) {
-            $book = $model->withAuthorInfo()->find($id);
+        // if ($id !== null) {
+        //     $book = $model->withAuthorInfo()->find($id);
 
-            if (! $book) {
-                return $this->failNotFound('Book not found');
-            }
+        //     if (! $book) {
+        //         return $this->failNotFound('Book not found');
+        //     }
 
-            return $this->respond($transformer->transform($book));
-        }
+        //     return $this->respond($transformer->transform($book));
+        // }
 
-        $perPage = $this->request->getGet('perPage') ?? 10;
-        $page = $this->request->getGet('page') ?? 1;
+        $perPage = $this->request->getGet('perPage');
+        $page = $this->request->getGet('page');
         $authorName = $this->request->getGet('authorName');
         $slug = $this->request->getGet('slug');
         $sort = $this->request->getGet('sort') ?? 'id';
         $direction = $this->request->getGet('direction') ?? 'asc';
 
-        if ($page < 0) {
-            return $this->failValidationErrors(['page' => 'Page number must be greater than 0']);
-        }
-        if ($perPage < 0) {
-            return $this->failValidationErrors(['perPage' => 'Per page number must be greater than 0']);
-        }
-
         // Otherwise, fetch all records
-        $books = $model
+        $model
         ->withAuthorInfo()
         ->filterAuthorName($authorName)
         ->filterSlug($slug)
         ->sortBy($sort, $direction);
+        
+        // 單筆
+        if($id !== null) {
+            $book = $model->find($id);
 
-        return $this->paginate($books, $perPage, transformWith: BookTransformer::class);
+            if(!$book) {
+                return api_response($this->response, api_error('Book not found', [], 404));
+            }
+
+            return api_response(
+                $this->response,
+                api_success('', $transformer->transform($book))
+            );
+        }
+
+        // 分頁
+        if($page && $perPage) {
+            $books = $model->paginate($perPage);
+
+            $meta = api_pagination($model->pager, $perPage);
+
+            return api_response(
+                $this->response,
+                api_success(
+                    '', 
+                    $transformer->collection($books), 
+                    [
+                        'pagination' => $meta
+                    ]
+                )
+            );
+        }
+
+        // 全部資料
+        $books = $model->findAll();
+
+        return api_response(
+            $this->response,
+            api_success('', $transformer->collection($books))
+        );
     }
 
      /**
@@ -67,19 +98,28 @@ class Books extends BaseController
         $data = $this->request->getRawInput();
 
         $rules = [
-            'title'     => 'required|string|max_length[255]',
+            'title' => 'required|string|max_length[255]',
             'author_id' => 'required|integer|is_not_unique[authors.id]',
-            'year'      => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
+            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
         ];
 
-        if (! $this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+        if(!$this->validate($rules)) {
+            // return $this->failValidationErrors($this->validator->getErrors());
+            return api_response(
+                $this->response, 
+                api_error(
+                    'Validation failed', 
+                    $this->validator->getErrors(), 
+                    400
+                )
+            );
         }
 
         $model = model('BookModel');
 
-        if (! $model->find($id)) {
-            return $this->failNotFound('Book not found');
+        if(!$model->find($id)) {
+            // return $this->failNotFound('Book not found');
+            return api_response($this->response, api_error('Book not found', [], 404));
         }
 
         $model->update($id, $data);
@@ -99,26 +139,34 @@ class Books extends BaseController
         $data = $this->request->getPost();
 
         $rules = [
-            'title'     => 'required|string|max_length[255]',
+            'title' => 'required|string|max_length[255]',
             'author_name' => 'required|string|max_length[255]',
-            'year'      => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
-            'price'     => 'required|numeric|greater_than_equal_to[0]',
+            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
+            'price' => 'required|numeric|greater_than_equal_to[0]',
         ];
 
         if(!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+            // return $this->failValidationErrors($this->validator->getErrors());
+            return api_response(
+                $this->response, 
+                api_error(
+                    'Validation failed', 
+                    $this->validator->getErrors(), 
+                    400
+                )
+            );
         }
         
         $authorModel = model('AuthorModel');
         $authorName = $data['author_name'];
         $author = $authorModel->where('name', $authorName)->first();
 
-        // 1. 找 author
+        // 找 author
         $author = $authorModel
                 ->where('name', $authorName)
                 ->first();
 
-        // 2. 不存在就新增
+        // 不存在就新增
         $authorId = 1;
         if (!$author) {
             $authorId = $authorModel->insert([
@@ -138,7 +186,11 @@ class Books extends BaseController
 
         $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
-        return $this->respondCreated((new BookTransformer())->transform($newBook));
+        // return $this->respondCreated((new BookTransformer())->transform($newBook));
+        return api_response(
+            $this->response,
+            api_success('', (new BookTransformer())->transform($newBook))
+        );
     }
 
     /**
@@ -151,7 +203,8 @@ class Books extends BaseController
         $model = model('BookModel');
 
         if (! $model->find($id)) {
-            return $this->failNotFound('Book not found');
+            // return $this->failNotFound('Book not found');
+            return api_response($this->response, api_error('Book not found', [], 404));
         }
 
         $model->delete($id);

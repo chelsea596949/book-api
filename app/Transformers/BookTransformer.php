@@ -35,4 +35,9 @@ class BookTransformer extends BaseTransformer
             'name' => $book['author_name'],
         ];
     }
+
+    public function collection(array $items): array
+    {
+        return array_map(fn($item) => $this->transform($item), $items);
+    }
 }
