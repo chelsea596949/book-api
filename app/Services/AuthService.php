@@ -21,10 +21,11 @@ class AuthService
 
         $token = $jwt->generate([
             'uid' => $user['uid'],
+            'level' => $user['level'],
         ]);
 
         session()->set('jwt', $token);
-        
+
         return api_success('', [
             'token' => $token
         ]);
