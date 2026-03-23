@@ -29,4 +29,25 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    public static function jwtService($getShared=true)
+    {
+        if($getShared) {
+            return static::getSharedInstance('jwtService');
+        }
+
+        // 使用 config() 獲取實例，CI4 會自動處理單例，避免重複加載
+        $config = config(\App\Config\AuthJwtConfig::class);
+
+        return new \App\Services\JwtService($config);
+    }
+
+    public static function authService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('authService');
+        }
+
+        return new \App\Services\AuthService();
+    }
 }
