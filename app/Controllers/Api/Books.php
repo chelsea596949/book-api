@@ -22,17 +22,6 @@ class Books extends BaseController
         $model       = model('BookModel');
         $transformer = new BookTransformer();
 
-        // If an ID is provided, fetch a single record
-        // if ($id !== null) {
-        //     $book = $model->withAuthorInfo()->find($id);
-
-        //     if (! $book) {
-        //         return $this->failNotFound('Book not found');
-        //     }
-
-        //     return $this->respond($transformer->transform($book));
-        // }
-
         $perPage = $this->request->getGet('perPage');
         $page = $this->request->getGet('page');
         $authorName = $this->request->getGet('authorName');
@@ -90,7 +79,6 @@ class Books extends BaseController
 
      /**
      * Update a book
-     *
      * PUT /api/books/{id}
      */
     public function putIndex(int $id): ResponseInterface
@@ -104,7 +92,6 @@ class Books extends BaseController
         ];
 
         if(!$this->validate($rules)) {
-            // return $this->failValidationErrors($this->validator->getErrors());
             return api_response(
                 $this->response, 
                 api_error(
@@ -131,7 +118,6 @@ class Books extends BaseController
 
     /**
      * Create a new book
-     *
      * POST /api/books
      */
     public function postIndex(): ResponseInterface
@@ -146,7 +132,6 @@ class Books extends BaseController
         ];
 
         if(!$this->validate($rules)) {
-            // return $this->failValidationErrors($this->validator->getErrors());
             return api_response(
                 $this->response, 
                 api_error(
@@ -186,7 +171,6 @@ class Books extends BaseController
 
         $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
-        // return $this->respondCreated((new BookTransformer())->transform($newBook));
         return api_response(
             $this->response,
             api_success('', (new BookTransformer())->transform($newBook))
@@ -195,15 +179,13 @@ class Books extends BaseController
 
     /**
      * Delete a book
-     *
      * DELETE /api/books/{id}
      */
     public function deleteIndex(int $id): ResponseInterface
     {
         $model = model('BookModel');
 
-        if (! $model->find($id)) {
-            // return $this->failNotFound('Book not found');
+        if(!$model->find($id)) {
             return api_response($this->response, api_error('Book not found', [], 404));
         }
 
