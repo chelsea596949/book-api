@@ -15,10 +15,10 @@ $routes->post('api/login', 'Api\Auth::login');
 $routes->get('api/books', 'Api\Books::getIndex');
 
 // 需要驗證的
-$routes->group('api', ['filter' => 'jwt'], function($routes) {
+$routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
     // admin only
     $routes->group('', ['filter' => 'role:1'], function($routes) {
-        $routes->post('books', 'Api\Books::create');
+        $routes->post('books', 'Api\Books::postIndex');
         $routes->delete('books/(:num)', 'Api\Books::deleteIndex/$1');
     });
 });

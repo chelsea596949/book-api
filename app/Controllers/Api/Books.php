@@ -125,9 +125,9 @@ class Books extends BaseController
         $data = $this->request->getPost();
 
         $rules = [
-            'title' => 'required|string|max_length[255]',
-            'author_name' => 'required|string|max_length[255]',
-            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
+            'title' => 'required|string|max_length[255]|alpha_numeric_punct',
+            'author_name' => 'required|string|max_length[255]|regex_match[/^[\p{Han}a-zA-Z0-9\s\.\-\_]+$/u]',
+            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to['.date('Y').']',
             'price' => 'required|numeric|greater_than_equal_to[0]',
         ];
 
@@ -153,11 +153,11 @@ class Books extends BaseController
 
         // 不存在就新增
         $authorId = 1;
-        if (!$author) {
+        if(!$author) {
             $authorId = $authorModel->insert([
                 'name' => $authorName
             ]);
-        } else {
+        }else {
             $authorId = $author['id'];
         }
 

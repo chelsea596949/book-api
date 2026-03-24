@@ -36,6 +36,7 @@ class Filters extends BaseFilters
         'performance'   => PerformanceMetrics::class,
         'jwt' => \App\Filters\JwtAuth::class,
         'role' => \App\Filters\RoleFilter::class,
+        'throttle' => \App\Filters\ThrottleFilter::class,
     ];
 
     /**
