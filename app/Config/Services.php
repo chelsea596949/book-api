@@ -44,10 +44,19 @@ class Services extends BaseService
 
     public static function authService($getShared = true)
     {
-        if ($getShared) {
+        if($getShared) {
             return static::getSharedInstance('authService');
         }
 
         return new \App\Services\AuthService();
+    }
+
+    public static function bookService($getShared = true)
+    {
+        if($getShared) {
+            return static::getSharedInstance('bookService');
+        }
+
+        return new \App\Services\BookService();
     }
 }

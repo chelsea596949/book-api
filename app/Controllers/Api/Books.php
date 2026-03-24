@@ -19,62 +19,77 @@ class Books extends BaseController
      */
     public function getIndex(?int $id=null): ResponseInterface
     {
-        $model       = model('BookModel');
-        $transformer = new BookTransformer();
+        // $model       = model('BookModel');
+        // $transformer = new BookTransformer();
 
-        $perPage = $this->request->getGet('perPage');
-        $page = $this->request->getGet('page');
-        $authorName = $this->request->getGet('authorName');
-        $slug = $this->request->getGet('slug');
-        $sort = $this->request->getGet('sort') ?? 'id';
-        $direction = $this->request->getGet('direction') ?? 'asc';
+        $data = $this->request->getGet();
+        // $perPage = $this->request->getGet('perPage');
+        // $page = $this->request->getGet('page');
+        // $authorName = $this->request->getGet('authorName');
+        // $slug = $this->request->getGet('slug');
+        // $sort = $this->request->getGet('sort') ?? 'id';
+        // $direction = $this->request->getGet('direction') ?? 'asc';
+
+        $books = service('bookService')->getBooks($data, $id);
 
         // Otherwise, fetch all records
-        $model
-        ->withAuthorInfo()
-        ->filterAuthorName($authorName)
-        ->filterSlug($slug)
-        ->sortBy($sort, $direction);
+        // $model
+        // ->withAuthorInfo()
+        // ->filterAuthorName($authorName)
+        // ->filterSlug($slug)
+        // ->sortBy($sort, $direction);
         
-        // 單筆
-        if($id !== null) {
-            $book = $model->find($id);
+        // // 單筆
+        // if($id !== null) {
+        //     $book = $model->find($id);
 
-            if(!$book) {
-                return api_response($this->response, api_error('Book not found', [], 404));
-            }
+        //     if(!$book) {
+        //         return api_response($this->response, api_error('Book not found', [], 404));
+        //     }
 
+        //     return api_response(
+        //         $this->response,
+        //         api_success('', $transformer->transform($book))
+        //     );
+        // }
+
+        // // 分頁
+        // if($page && $perPage) {
+        //     $books = $model->paginate($perPage);
+
+        //     $meta = api_pagination($model->pager, $perPage);
+
+        //     return api_response(
+        //         $this->response,
+        //         api_success(
+        //             '', 
+        //             $transformer->collection($books), 
+        //             [
+        //                 'pagination' => $meta
+        //             ]
+        //         )
+        //     );
+        // }
+
+        // // 全部資料
+        // $books = $model->findAll();
+
+        // return api_response(
+        //     $this->response,
+        //     api_success('', $transformer->collection($books))
+        // );
+
+        if($books['error']) {
             return api_response(
                 $this->response,
-                api_success('', $transformer->transform($book))
+                api_error($books['message'], [], $books['code'])
             );
-        }
-
-        // 分頁
-        if($page && $perPage) {
-            $books = $model->paginate($perPage);
-
-            $meta = api_pagination($model->pager, $perPage);
-
+        }else {
             return api_response(
                 $this->response,
-                api_success(
-                    '', 
-                    $transformer->collection($books), 
-                    [
-                        'pagination' => $meta
-                    ]
-                )
+                api_success('', $books['data'], $books['meta'] ?? [])
             );
         }
-
-        // 全部資料
-        $books = $model->findAll();
-
-        return api_response(
-            $this->response,
-            api_success('', $transformer->collection($books))
-        );
     }
 
      /**
@@ -142,39 +157,52 @@ class Books extends BaseController
             );
         }
         
-        $authorModel = model('AuthorModel');
-        $authorName = $data['author_name'];
-        $author = $authorModel->where('name', $authorName)->first();
+        // $authorModel = model('AuthorModel');
+        // $authorName = $data['author_name'];
+        // $author = $authorModel->where('name', $authorName)->first();
 
-        // 找 author
-        $author = $authorModel
-                ->where('name', $authorName)
-                ->first();
+        // // 找 author
+        // $author = $authorModel
+        //         ->where('name', $authorName)
+        //         ->first();
 
-        // 不存在就新增
-        $authorId = 1;
-        if(!$author) {
-            $authorId = $authorModel->insert([
-                'name' => $authorName
-            ]);
+        // // 不存在就新增
+        // $authorId = 1;
+        // if(!$author) {
+        //     $authorId = $authorModel->insert([
+        //         'name' => $authorName
+        //     ]);
+        // }else {
+        //     $authorId = $author['id'];
+        // }
+
+        // $data['slug'] = url_title($data['title'], '-', true);
+        // $data['author_id'] = $authorId;
+        // unset($data['author_name']);
+
+        // $bookModel = model('BookModel');
+
+        // $bookModel->insert($data);
+
+        // $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
+
+        $newBook = service('bookService')->createBook($data);
+
+        // return api_response(
+        //     $this->response,
+        //     api_success('', (new BookTransformer())->transform($newBook))
+        // );
+        if($newBook['error']) {
+            return api_response(
+                $this->response,
+                api_error($newBook['message'], [], $newBook['code'])
+            );
         }else {
-            $authorId = $author['id'];
+            return api_response(
+                $this->response,
+                api_success('', $newBook['data'], $newBook['meta'] ?? [])
+            );
         }
-
-        $data['slug'] = url_title($data['title'], '-', true);
-        $data['author_id'] = $authorId;
-        unset($data['author_name']);
-
-        $bookModel = model('BookModel');
-
-        $bookModel->insert($data);
-
-        $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
-
-        return api_response(
-            $this->response,
-            api_success('', (new BookTransformer())->transform($newBook))
-        );
     }
 
     /**
@@ -183,14 +211,27 @@ class Books extends BaseController
      */
     public function deleteIndex(int $id): ResponseInterface
     {
-        $model = model('BookModel');
+        // $model = model('BookModel');
 
-        if(!$model->find($id)) {
-            return api_response($this->response, api_error('Book not found', [], 404));
+        // if(!$model->find($id)) {
+        //     return api_response($this->response, api_error('Book not found', [], 404));
+        // }
+
+        // $model->delete($id);
+
+        $deletedBook = service('bookService')->deleteBook($id);
+
+        // return $this->respondDeleted(['id' => $id]);
+        if($deletedBook['error']) {
+            return api_response(
+                $this->response,
+                api_error($deletedBook['message'], [], $deletedBook['code'])
+            );
+        }else {
+            return api_response(
+                $this->response,
+                api_success('', $deletedBook['data'], $deletedBook['meta'] ?? [])
+            );
         }
-
-        $model->delete($id);
-
-        return $this->respondDeleted(['id' => $id]);
     }
 }
