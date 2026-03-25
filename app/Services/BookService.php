@@ -2,76 +2,80 @@
 namespace App\Services;
 
 use App\Transformers\BookTransformer;
+use App\DTO\Book\BookQueryDTO;
+use App\DTO\Book\BookResponseDTO;
+use App\DTO\Book\BookCreateDTO;
 
 class BookService {
     /**
      * Get books
-     * @param array $data
+     * @param BookQueryDTO $dto
      * @param int|null $id
-     * @return array
+     * @return BookResponseDTO
      */
-    public function getBooks($data, $id=null) {
+    public function getBooks(BookQueryDTO $dto, $id=null) : BookResponseDTO
+    {
         $model = model('BookModel');
         $transformer = new BookTransformer();
 
         $model
         ->withAuthorInfo()
-        ->filterAuthorName($data['authorName'] ?? null)
-        ->filterSlug($data['slug'] ?? null)
-        ->sortBy($data['sort'] ?? 'id', $data['direction'] ?? 'asc');
+        ->filterAuthorName($dto->authorName)
+        ->filterSlug($dto->slug)
+        ->sortBy($dto->sort, $dto->direction);
 
         // 單筆
         if($id !== null) {
             $book = $model->find($id);
 
             if(!$book) {
-                return [
-                    'error' => true,
-                    'message' => 'Book not found',
-                    'code' => 404,
-                    'data' => null,
-                    'meta' => []
-                ];
+                return new BookResponseDTO(
+                    true,
+                    null,
+                    [],
+                    'Book not found',
+                    404
+                );
             }
 
-            return [
-                'error' => false,
-                'data' => $transformer->transform($book),
-                'meta' => []
-            ];
+            return new BookResponseDTO(
+                false,
+                $transformer->transform($book)
+            );
         }
 
         // 分頁
-        if(!empty($data['page']) && !empty($data['perPage'])) {
-            $books = $model->paginate($data['perPage']);
+        if(!empty($dto->page) && !empty($dto->perPage)) {
+            $books = $model->paginate($dto->perPage);
 
-            $meta = api_pagination($model->pager, $data['perPage']);
+            $meta = api_pagination($model->pager, $dto->perPage);
 
-            return [
-                'error' => false,
-                'data' => $transformer->collection($books),
-                'meta' => ['pagination' => $meta]
-            ];
+            return new BookResponseDTO(
+                false,
+                $transformer->collection($books),
+                ['pagination' => $meta]
+            );
         }
 
         // 全部資料
         $books = $model->findAll();
 
-        return [
-            'error' => false,
-            'data' => $transformer->collection($books),
-            'meta' => []
-        ];
+        return new BookResponseDTO(
+            false,
+            $transformer->collection($books)
+        );
     }
     
     /**
      * Create a new book
-     * @param array $data
-     * @return array
+     * @param BookCreateDTO $dto
+     * @return BookResponseDTO
      */
-    public function createBook($data) {
+    public function createBook(BookCreateDTO $dto) : BookResponseDTO
+    {
         $authorModel = model('AuthorModel');
-        $authorName = $data['author_name'];
+        $data = $dto->toArray();
+        $authorName = $data['authorName'];
         $author = $authorModel->where('name', $authorName)->first();
 
         // 找 author
@@ -91,55 +95,56 @@ class BookService {
 
         $data['slug'] = url_title($data['title'], '-', true);
         $data['author_id'] = $authorId;
-        unset($data['author_name']);
+        unset($data['authorName']);
 
         $bookModel = model('BookModel');
 
         $createdBook = $bookModel->insert($data);
         if(!$createdBook) {
-            return [
-                'error' => true,
-                'message' => 'Failed to create book',
-                'code' => 500,
-                'data' => null,
-                'meta' => []
-            ];
+            return new BookResponseDTO(
+                true,
+                null,
+                [],
+                'Failed to create book',
+                500
+            );
         }
 
         $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
-        // return $newBook;
-        return [
-            'error' => false,
-            'data' => (new BookTransformer())->transform($newBook),
-            'meta' => []
-        ];
+        return new BookResponseDTO(
+            false,
+            (new BookTransformer())->transform($newBook)
+        );
     }
 
     /**
      * Delete a book
      * @param int $id
-     * @return array
+     * @return BookResponseDTO
      */
-    public function deleteBook($id) {
+    public function deleteBook($id) : BookResponseDTO
+    {
         $model = model('BookModel');
 
         if(!$model->find($id)) {
-            return [
-                'error' => true,
-                'message' => 'Book not found',
-                'code' => 404,
-                'data' => null,
-                'meta' => []
-            ];
+            return new BookResponseDTO(
+                true,
+                null,
+                [],
+                'Book not found',
+                404
+            );
         }
 
         $model->delete($id);
 
-        return [
-            'error' => false,
-            'data' => ['id' => $id],
-            'meta' => []
-        ];
+        return new BookResponseDTO(
+            false,
+            null,
+            ['id' => $id],
+            'Book deleted successfully',
+            200
+        );
     }
 }
