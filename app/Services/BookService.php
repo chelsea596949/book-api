@@ -15,16 +15,34 @@ class BookService {
      */
     public function getBooks(BookQueryDTO $dto, $id=null) : BookResponseDTO
     {
+        $cache = cache();
         $model = model('BookModel');
         $transformer = new BookTransformer();
 
-        $model
-        ->withAuthorInfo()
-        ->filterAuthorName($dto->authorName)
-        ->filterSlug($dto->slug)
-        ->sortBy($dto->sort, $dto->direction);
+        // 建立 cache key
+        $key = 'books_'.md5(json_encode([
+            'id' => $id,
+            'authorName' => $dto->authorName,
+            'slug' => $dto->slug,
+            'sort' => $dto->sort,
+            'direction' => $dto->direction,
+            'page' => $dto->page,
+            'perPage' => $dto->perPage
+        ]));
 
-        // 單筆
+        // 先讀 cache
+        if($cached = $cache->get($key)) {
+            return $cached;
+        }
+
+        // 原本 query
+        $model
+            ->withAuthorInfo()
+            ->filterAuthorName($dto->authorName)
+            ->filterSlug($dto->slug)
+            ->sortBy($dto->sort, $dto->direction);
+
+        // ===== 單筆 =====
         if($id !== null) {
             $book = $model->find($id);
 
@@ -38,32 +56,40 @@ class BookService {
                 );
             }
 
-            return new BookResponseDTO(
+            $response = new BookResponseDTO(
                 false,
                 $transformer->transform($book)
             );
+
+            $cache->save($key, $response, 300); // cache 5分鐘
+            return $response;
         }
 
-        // 分頁
+        // ===== 分頁 =====
         if(!empty($dto->page) && !empty($dto->perPage)) {
             $books = $model->paginate($dto->perPage);
-
             $meta = api_pagination($model->pager, $dto->perPage);
 
-            return new BookResponseDTO(
+            $response = new BookResponseDTO(
                 false,
                 $transformer->collection($books),
                 ['pagination' => $meta]
             );
+
+            $cache->save($key, $response, 300);
+            return $response;
         }
 
-        // 全部資料
+        // ===== 全部 =====
         $books = $model->findAll();
 
-        return new BookResponseDTO(
+        $response = new BookResponseDTO(
             false,
             $transformer->collection($books)
         );
+
+        $cache->save($key, $response, 300);
+        return $response;
     }
     
     /**
@@ -112,6 +138,8 @@ class BookService {
 
         $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
+        cache()->clean(); // 清除 cache
+
         return new BookResponseDTO(
             false,
             (new BookTransformer())->transform($newBook)
@@ -138,6 +166,8 @@ class BookService {
         }
 
         $model->delete($id);
+
+        cache()->clean(); // 清除 cache
 
         return new BookResponseDTO(
             false,

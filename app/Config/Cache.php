@@ -22,7 +22,8 @@ class Cache extends BaseConfig
      * The name of the preferred handler that should be used. If for some reason
      * it is not available, the $backupHandler will be used in its place.
      */
-    public string $handler = 'file';
+    // public string $handler = 'file';
+    public string $handler = 'redis';
 
     /**
      * --------------------------------------------------------------------------
@@ -123,10 +124,19 @@ class Cache extends BaseConfig
      *     database?: int
      * }
      */
+    // public array $redis = [
+    //     'host'       => '127.0.0.1',
+    //     'password'   => null,
+    //     'port'       => 6379,
+    //     'timeout'    => 0,
+    //     'async'      => false, // specific to Predis and ignored by the native Redis extension
+    //     'persistent' => false,
+    //     'database'   => 0,
+    // ];
     public array $redis = [
-        'host'       => '127.0.0.1',
-        'password'   => null,
-        'port'       => 6379,
+        'host'       => 'redis-16171.c299.asia-northeast1-1.gce.cloud.redislabs.com',
+        'password'   => 'cTcYfPOSifTAoqWurjCJiKMwy51AlGfl',
+        'port'       => 16171,
         'timeout'    => 0,
         'async'      => false, // specific to Predis and ignored by the native Redis extension
         'persistent' => false,
