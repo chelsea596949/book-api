@@ -42,7 +42,7 @@ class Services extends BaseService
         return new \App\Services\JwtService($config);
     }
 
-    public static function authService($getShared = true)
+    public static function authService($getShared=true)
     {
         if($getShared) {
             return static::getSharedInstance('authService');
@@ -51,12 +51,21 @@ class Services extends BaseService
         return new \App\Services\AuthService();
     }
 
-    public static function bookService($getShared = true)
+    public static function bookService($getShared=true)
     {
         if($getShared) {
             return static::getSharedInstance('bookService');
         }
 
         return new \App\Services\BookService();
+    }
+
+    public static function fileService($getShared=true)
+    {
+        if($getShared) {
+            return static::getSharedInstance('fileService');
+        }
+
+        return new \App\Services\FileService();
     }
 }

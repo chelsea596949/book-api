@@ -7,6 +7,7 @@ class BookCreateDTO
     public string $authorName;
     public int $year;
     public float $price;
+    public ?string $image_url;
 
     public static function rules(): array
     {
@@ -15,6 +16,7 @@ class BookCreateDTO
             'author_name' => 'required|string|max_length[255]|regex_match[/^[\p{Han}a-zA-Z0-9\s\.\-\_]+$/u]',
             'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to['.date('Y').']',
             'price' => 'required|numeric|greater_than_equal_to[0]',
+            'book_image' => 'uploaded[book_image]|max_size[book_image,2048]|is_image[book_image]|mime_in[book_image,image/jpg,image/jpeg,image/png]',// 加入圖片驗證：只能是圖片、最大 2MB
         ];
     }
 
@@ -25,6 +27,7 @@ class BookCreateDTO
         $dto->authorName = $data['author_name'];
         $dto->year = (int)$data['year'];
         $dto->price = (float)$data['price'];
+        $dto->image_url = $data['image_url'] ?? null;
 
         return $dto;
     }
@@ -36,6 +39,7 @@ class BookCreateDTO
             'authorName' => $this->authorName,
             'year' => $this->year,
             'price' => $this->price,
+            'image_url' => $this->image_url,
         ];
     }
 }

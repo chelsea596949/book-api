@@ -21,7 +21,6 @@ class Books extends BaseController
      */
     public function getIndex(?int $id=null): ResponseInterface
     {
-        // $data = $this->request->getGet();
         $dto = new BookQueryDTO($this->request->getGet());
 
         $responseDTO = service('bookService')->getBooks($dto, $id);
@@ -78,24 +77,6 @@ class Books extends BaseController
     {
         $data = $this->request->getPost();
 
-        // $rules = [
-        //     'title' => 'required|string|max_length[255]|alpha_numeric_punct',
-        //     'author_name' => 'required|string|max_length[255]|regex_match[/^[\p{Han}a-zA-Z0-9\s\.\-\_]+$/u]',
-        //     'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to['.date('Y').']',
-        //     'price' => 'required|numeric|greater_than_equal_to[0]',
-        // ];
-
-        // if(!$this->validate($rules)) {
-        //     return api_response(
-        //         $this->response, 
-        //         api_error(
-        //             'Validation failed', 
-        //             $this->validator->getErrors(), 
-        //             400
-        //         )
-        //     );
-        // }
-
         if(!$this->validate(BookCreateDTO::rules())) {
             return api_response(
                 $this->response,
@@ -107,11 +88,15 @@ class Books extends BaseController
             );
         }
 
+        // 2使用 FileService 處理圖片
+        $imageName = service('fileService')->uploadImage($this->request->getFile('book_image'));
+        if($imageName) {
+            $data['image_url'] = $imageName;
+        }
+
         $dto = BookCreateDTO::fromArray($data);
 
         $responseDTO = service('bookService')->createBook($dto);
-
-        // $responseDTO = service('bookService')->createBook($data);
 
         return api_response(
             $this->response,

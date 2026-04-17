@@ -21,6 +21,7 @@ class BookTransformer extends BaseTransformer
             'slug'  => $resource['slug'],
             'year'  => $resource['year'],
             'price' => $resource['price'],
+            'image_url' => $resource['image_url'],
         ];
     }
 

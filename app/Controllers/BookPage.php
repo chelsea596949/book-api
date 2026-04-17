@@ -8,7 +8,7 @@ class BookPage extends BaseController
     {
         helper('form');
 
-        return view('templates/header', ['title' => 'Create a books item'])
+        return view('templates/header', ['title' => 'Create a book item'])
             . view('books/create')
             . view('templates/footer');
     }
