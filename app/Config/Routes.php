@@ -7,7 +7,7 @@ use App\Controllers\UserPage;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->get('/', 'BookPage::index');
 
 // 不需要驗證的
 $routes->get('users/login', [UserPage::class, 'login']);

@@ -1,7 +1,7 @@
 <?= session()->getFlashdata('error') ?>
 <?= validation_list_errors() ?>
 
-<div class="d-flex flex-column align-items-center justify-content-center vh-100"">
+<div class="d-flex flex-column align-items-center justify-content-center vh-100">
     <h1 class="display-4 fw-bold text-white mb-4"><?= esc($title) ?></h1>
 
     <form action="/api/books" method="post" enctype="multipart/form-data" style="width: 100%; max-width: 400px;" class="text-white">
