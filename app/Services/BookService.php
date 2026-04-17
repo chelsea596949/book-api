@@ -15,7 +15,7 @@ class BookService {
      */
     public function getBooks(BookQueryDTO $dto, $id=null) : BookResponseDTO
     {
-        $cache = cache();
+        // $cache = cache();
         $model = model('BookModel');
         $transformer = new BookTransformer();
 
@@ -31,7 +31,10 @@ class BookService {
         ]));
 
         // 先讀 cache
-        if($cached = $cache->get($key)) {
+        // if($cached = $cache->get($key)) {
+        //     return $cached;
+        // }
+        if($cached = safe_get_cache($key)) {
             return $cached;
         }
 
@@ -61,7 +64,8 @@ class BookService {
                 $transformer->transform($book)
             );
 
-            $cache->save($key, $response, 300); // cache 5分鐘
+            // $cache->save($key, $response, 300); // cache 5分鐘
+            safe_save_cache($key, $response, 300); // cache 5分鐘
             return $response;
         }
 
@@ -76,7 +80,8 @@ class BookService {
                 ['pagination' => $meta]
             );
 
-            $cache->save($key, $response, 300);
+            // $cache->save($key, $response, 300);
+            safe_save_cache($key, $response, 300);
             return $response;
         }
 
@@ -88,7 +93,8 @@ class BookService {
             $transformer->collection($books)
         );
 
-        $cache->save($key, $response, 300);
+        // $cache->save($key, $response, 300);
+        safe_save_cache($key, $response, 300);
         return $response;
     }
     
@@ -138,7 +144,8 @@ class BookService {
 
         $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
 
-        cache()->clean(); // 清除 cache
+        // cache()->clean(); // 清除 cache
+        safe_clean_cache(); // 清除 cache
 
         return new BookResponseDTO(
             false,
@@ -167,7 +174,8 @@ class BookService {
 
         $model->delete($id);
 
-        cache()->clean(); // 清除 cache
+        // cache()->clean(); // 清除 cache
+        safe_clean_cache(); // 清除 cache
 
         return new BookResponseDTO(
             false,
