@@ -17,4 +17,9 @@ const ApiService = {
     getBooks: function() {
         return this.request('/books');
     },
+    
+    // 專門抓取書本詳細資料的函式
+    getBookDetail: function(id) {
+        return this.request(`/books/${id}`);
+    },
 };

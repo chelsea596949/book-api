@@ -29,9 +29,9 @@ class BookService {
             'perPage' => $dto->perPage
         ]));
 
-        if($cached = safe_get_cache($key)) {
-            return $cached;
-        }
+        // if($cached = safe_get_cache($key)) {
+        //     return $cached;
+        // }
 
         // 原本 query
         $model
@@ -42,7 +42,7 @@ class BookService {
 
         // ===== 單筆 =====
         if($id !== null) {
-            $book = $model->find($id);
+            $book = $model->where($model->table.'.id', $id)->first();
 
             if(!$book) {
                 return new BookResponseDTO(

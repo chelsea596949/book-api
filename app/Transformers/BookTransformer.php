@@ -22,10 +22,12 @@ class BookTransformer extends BaseTransformer
             'year'  => $resource['year'],
             'price' => $resource['price'],
             'image_url' => $resource['image_url'],
+            'author_id' => $resource['author_id'],
+            'author_name' => $resource['author_name'],
         ];
     }
 
-    protected function includeAuthor(array $book): ?array
+    public function includeAuthor(array $book): ?array
     {
         if (empty($book['author_id']) || empty($book['author_name'])) {
             return null;

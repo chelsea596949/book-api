@@ -125,19 +125,10 @@ class Cache extends BaseConfig
      *     database?: int
      * }
      */
-    // public array $redis = [
-    //     'host'       => '127.0.0.1',
-    //     'password'   => null,
-    //     'port'       => 6379,
-    //     'timeout'    => 0,
-    //     'async'      => false, // specific to Predis and ignored by the native Redis extension
-    //     'persistent' => false,
-    //     'database'   => 0,
-    // ];
     public array $redis = [
-        'host'       => 'redis-16171.c299.asia-northeast1-1.gce.cloud.redislabs.com',
-        'password'   => 'cTcYfPOSifTAoqWurjCJiKMwy51AlGfl',
-        'port'       => 16171,
+        'host'       => '127.0.0.1',
+        'password'   => null,
+        'port'       => 6379,
         'timeout'    => 0,
         'async'      => false, // specific to Predis and ignored by the native Redis extension
         'persistent' => false,
@@ -206,4 +197,15 @@ class Cache extends BaseConfig
      * @var list<int>
      */
     public array $cacheStatusCodes = [];
+
+    // 在建構子中從 .env 讀取並覆蓋
+    public function __construct()
+    {
+        parent::__construct();
+
+        // 使用 env() 讀取設定，若沒讀到則保留上面的預設值
+        $this->redis['host']     = env('redis.host', $this->redis['host']);
+        $this->redis['password'] = env('redis.password', $this->redis['password']);
+        $this->redis['port']     = env('redis.port', $this->redis['port']);
+    }
 }

@@ -36,4 +36,17 @@ class BookPage extends BaseController
             . view('books/index')
             . view('templates/footer');
     }
+
+    public function detail()
+    {
+        $data = [
+            'page_js' => [
+                'js/detail.js', 
+                'js/api.js',
+            ],
+        ];
+        return view('templates/header', $data)
+            . view('books/detail')
+            . view('templates/footer');
+    }
 }
