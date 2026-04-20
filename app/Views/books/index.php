@@ -1,4 +1,9 @@
-<div class="d-flex flex-column align-items-center justify-content-center vh-100">
+<div class="d-flex flex-column align-items-center justify-content-center vh-100 position-relative">
+    
+    <div id="auth-zone" class="position-absolute top-0 end-0 p-4">
+        <a href="users/login" class="btn btn-outline-light px-4">LOG IN</a>
+    </div>
+
     <h1 class="display-4 fw-bold text-white mb-1"><?= esc($title) ?></h1>
     <p class="lead text-white-50 mb-4">Find any books you like!</p>
 

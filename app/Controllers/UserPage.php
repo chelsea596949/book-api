@@ -8,7 +8,15 @@ class UserPage extends BaseController
     {
         helper('form');
 
-        return view('templates/header', ['title' => 'Login'])
+        $data = [
+            'title' => 'Login',
+            'page_js' => [
+                'js/login.js', 
+                'js/api.js',
+            ],
+        ];
+
+        return view('templates/header', $data)
             . view('users/login')
             . view('templates/footer');
     }

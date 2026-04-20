@@ -22,4 +22,9 @@ const ApiService = {
     getBookDetail: function(id) {
         return this.request(`/books/${id}`);
     },
+
+    // 登入
+    login: function(data) {
+        return this.request(`/login`, 'POST', data);
+    },
 };

@@ -1,18 +1,31 @@
-<h2><?= esc($title) ?></h2>
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="card shadow-sm" style="width: 100%; max-width: 400px;">
+        <div class="card-body p-4">
+            <h2 class="text-center mb-4"><?= esc($title) ?></h2>
 
-<?= session()->getFlashdata('error') ?>
-<?= validation_list_errors() ?>
+            <div id="error-message" class="alert alert-danger py-2 d-none"></div>
 
-<form action="/api/login" method="post">
-    <?= csrf_field() ?>
+            <form id="login-form">
+                <?= csrf_field() ?>
 
-    <label for="uid">user_name</label>
-    <input type="input" name="uid" value="<?= set_value('uid') ?>" required>
-    <br>
+                <div class="mb-3">
+                    <label for="uid" class="form-label">User Name</label>
+                    <input type="text" name="uid" id="uid" class="form-control" 
+                           value="<?= set_value('uid') ?>" required>
+                </div>
 
-    <label for="password">Password</label>
-    <input type="password" name="password" required>
-    <br>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
 
-    <input type="submit" name="submit" value="Login">
-</form>
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" id="login-btn" class="btn btn-primary">
+                        <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        Login
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

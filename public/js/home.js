@@ -1,5 +1,35 @@
 $(document).ready(function() {
     renderBookCarousel();
+
+    const token = localStorage.getItem('auth_token');
+    const $authZone = $('#auth-zone');
+
+    if(token) {
+        // 從 localStorage 讀取儲存的用戶名 (推薦登入時順便存入)
+        const username = localStorage.getItem('uid') || 'User';
+        
+        renderWelcome(username);
+    }
+
+    // 渲染歡迎介面
+    function renderWelcome(name) {
+        $authZone.html(`
+            <div class="d-flex align-items-center">
+                <span class="text-white-50 me-3">
+                    Welcome, <strong class="text-white">${name}</strong>
+                </span>
+            </div>
+        `);
+    }
+
+    // 登出事件處理
+    $(document).on('click', '#logout-btn', function() {
+        if(confirm('Are you sure you want to log out?')) {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('uid');
+            window.location.reload(); // 重新整理頁面回到未登入狀態
+        }
+    });
 });
 
 function renderBookCarousel() {

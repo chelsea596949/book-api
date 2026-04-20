@@ -29,6 +29,7 @@ class AuthService
         session()->set('userInfo', $userInfo);
 
         return api_success('', [
+            'uid' => $user['uid'],
             'token' => $token
         ]);
     }
