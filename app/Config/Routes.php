@@ -22,6 +22,7 @@ $routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
     // admin only
     $routes->group('', ['filter' => 'role:1'], function($routes) {
         $routes->post('books', 'Api\Books::postIndex');
+        $routes->put('books/(:num)', 'Api\Books::putIndex/$1');
         $routes->delete('books/(:num)', 'Api\Books::deleteIndex/$1');
     });
 });

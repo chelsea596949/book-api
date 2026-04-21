@@ -14,7 +14,7 @@ class BookCreateDTO
         return [
             'title' => 'required|string|max_length[255]|alpha_numeric_punct',
             'author_name' => 'required|string|max_length[255]|regex_match[/^[\p{Han}a-zA-Z0-9\s\.\-\_]+$/u]',
-            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to['.date('Y').']',
+            'year' => 'required|integer|greater_than_equal_to[0]|less_than_equal_to['.date('Y').']',
             'price' => 'required|numeric|greater_than_equal_to[0]',
             'book_image' => 'uploaded[book_image]|max_size[book_image,2048]|is_image[book_image]|mime_in[book_image,image/jpg,image/jpeg,image/png]',// 加入圖片驗證：只能是圖片、最大 2MB
         ];

@@ -8,6 +8,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Api\ResponseTrait;
 use App\DTO\Book\BookQueryDTO;
 use App\DTO\Book\BookCreateDTO;
+use App\DTO\Book\BookEditDTO;
 
 class Books extends BaseController
 {
@@ -39,34 +40,60 @@ class Books extends BaseController
     {
         $data = $this->request->getRawInput();
 
-        $rules = [
-            'title' => 'required|string|max_length[255]',
-            'author_id' => 'required|integer|is_not_unique[authors.id]',
-            'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
-        ];
+        // $rules = [
+        //     'title' => 'required|string|max_length[255]',
+        //     'author_id' => 'required|integer|is_not_unique[authors.id]',
+        //     'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
+        // ];
 
-        if(!$this->validate($rules)) {
+        // if(!$this->validate($rules)) {
+        //     return api_response(
+        //         $this->response, 
+        //         api_error(
+        //             'Validation failed', 
+        //             $this->validator->getErrors(), 
+        //             400
+        //         )
+        //     );
+        // }
+
+        if(!$this->validate(BookEditDTO::rules())) {
             return api_response(
-                $this->response, 
+                $this->response,
                 api_error(
-                    'Validation failed', 
-                    $this->validator->getErrors(), 
+                    'Validation failed',
+                    $this->validator->getErrors(),
                     400
                 )
             );
         }
 
-        $model = model('BookModel');
-
-        if(!$model->find($id)) {
-            return api_response($this->response, api_error('Book not found', [], 404));
+        // 使用 FileService 處理圖片
+        $imageName = service('fileService')->uploadImage($this->request->getFile('book_image'));
+        if($imageName) {
+            $data['image_url'] = $imageName;
         }
+        
+        $dto = BookEditDTO::fromArray($data);
 
-        $model->update($id, $data);
+        $responseDTO = service('bookService')->editBook($dto, $id);
 
-        $updatedBook = $model->withAuthorInfo()->find($id);
+        // $model = model('BookModel');
 
-        return $this->respond((new BookTransformer())->transform($updatedBook));
+        // if(!$model->find($id)) {
+        //     return api_response($this->response, api_error('Book not found', [], 404));
+        // }
+
+        // $model->update($id, $data);
+
+        // $updatedBook = $model->withAuthorInfo()->find($id);
+
+        // return $this->respond((new BookTransformer())->transform($updatedBook));
+
+        return api_response(
+            $this->response,
+            $responseDTO->toApiFormat()
+        );
     }
 
     /**
@@ -88,7 +115,7 @@ class Books extends BaseController
             );
         }
 
-        // 2使用 FileService 處理圖片
+        // 使用 FileService 處理圖片
         $imageName = service('fileService')->uploadImage($this->request->getFile('book_image'));
         if($imageName) {
             $data['image_url'] = $imageName;

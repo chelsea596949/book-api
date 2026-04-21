@@ -5,6 +5,7 @@ use App\Transformers\BookTransformer;
 use App\DTO\Book\BookQueryDTO;
 use App\DTO\Book\BookResponseDTO;
 use App\DTO\Book\BookCreateDTO;
+use App\DTO\Book\BookEditDTO;
 
 class BookService {
     /**
@@ -97,51 +98,65 @@ class BookService {
      */
     public function createBook(BookCreateDTO $dto) : BookResponseDTO
     {
-        $authorModel = model('AuthorModel');
         $data = $dto->toArray();
-        $authorName = $data['authorName'];
-        $author = $authorModel->where('name', $authorName)->first();
-
-        // 找 author
-        $author = $authorModel
-                ->where('name', $authorName)
-                ->first();
-
-        // 不存在就新增
-        $authorId = 1;
-        if(!$author) {
-            $authorId = $authorModel->insert([
-                'name' => $authorName
-            ]);
-        }else {
-            $authorId = $author['id'];
-        }
-
-        $data['slug'] = url_title($data['title'], '-', true);
-        $data['author_id'] = $authorId;
+        
+        // 使用通用方法處理作者
+        $data['author_id'] = $this->getOrCreateAuthorId($data['authorName']);
         unset($data['authorName']);
 
+        $data['slug'] = url_title($data['title'], '-', true);
+        
         $bookModel = model('BookModel');
+        $insertId = $bookModel->insert($data);
 
-        $createdBook = $bookModel->insert($data);
-        if(!$createdBook) {
-            return new BookResponseDTO(
-                true,
-                null,
-                [],
-                'Failed to create book',
-                500
-            );
+        if(!$insertId) {
+            return new BookResponseDTO(true, null, [], 'Failed to create book', 500);
         }
 
-        $newBook = $bookModel->withAuthorInfo()->find($bookModel->insertID());
+        $newBook = $bookModel->withAuthorInfo()->find($insertId);
+        safe_clean_cache();
 
-        safe_clean_cache(); // 清除 cache
+        return new BookResponseDTO(false, (new BookTransformer())->transform($newBook));
+    }
+    
+    /**
+     * Edit an existing book
+     * @param BookEditDTO $dto
+     * @param int $id
+     * @return BookResponseDTO
+     */
+    public function editBook(BookEditDTO $dto, int $id) : BookResponseDTO
+    {
+        $data = $dto->toArray(true); 
+        $bookId = $id;
 
-        return new BookResponseDTO(
-            false,
-            (new BookTransformer())->transform($newBook)
-        );
+        if(!$bookId) {
+            return new BookResponseDTO(true, null, [], 'Wrong book ID', 500);
+        }
+
+        // 只有在資料中有傳入 author_name 時才處理
+        if(isset($data['author_name'])) {
+            $data['author_id'] = $this->getOrCreateAuthorId($data['author_name']);
+            unset($data['author_name']);
+        }
+
+        if(isset($data['title'])) {
+            $data['slug'] = url_title($data['title'], '-', true);
+        }
+
+        if(empty($data)) {
+            return new BookResponseDTO(true, null, [], 'No data to update', 400);
+        }
+
+        $bookModel = model('BookModel');
+        if(!$bookModel->update($bookId, $data)) {
+            return new BookResponseDTO(true, null, [], 'Failed to edit book', 500);
+        }
+
+        $newBook = $bookModel->withAuthorInfo()->find($bookId);
+        safe_clean_cache();
+
+        return new BookResponseDTO(false, (new BookTransformer())->transform($newBook));
     }
 
     /**
@@ -174,5 +189,26 @@ class BookService {
             'Book deleted successfully',
             200
         );
+    }
+
+    /**
+     * 根據姓名取得作者 ID，若不存在則新增
+     * @param string $authorName
+     * @return int|string|null
+     */
+    private function getOrCreateAuthorId(string $authorName)
+    {
+        $authorModel = model('AuthorModel');
+        
+        // 尋找現有作者
+        $author = $authorModel->where('name', $authorName)->first();
+
+        if(!$author) {
+            // 不存在就新增並回傳新 ID
+            return $authorModel->insert(['name' => $authorName]);
+        }
+
+        // 存在就回傳現有 ID
+        return $author['id'];
     }
 }

@@ -8,7 +8,7 @@ $(document).ready(function() {
         e.preventDefault(); // 阻止頁面跳轉
 
         const $form = $(this);
-        const $errorBox = $('#error-message');
+        const $errorBox = $('#add-book-error-message');
         const $createBookBtn = $('#create-book-btn');
         const $spinner = $('#create-book-btn-spinner');
 
@@ -62,6 +62,63 @@ $(document).ready(function() {
             });
     });
 
+    $('#edit-book-form').on('submit', function(e) {
+        e.preventDefault(); // 阻止頁面跳轉
+
+        const $form = $(this);
+        const $errorBox = $('#edit-book-error-message');
+        const $editBookBtn = $('#edit-book-btn');
+        const $spinner = $('#edit-book-btn-spinner');
+
+        // 清空並隱藏錯誤訊息
+        $errorBox.addClass('d-none').empty();
+        
+        // 按鈕讀取中狀態
+        $editBookBtn.prop('disabled', true);
+        $spinner.removeClass('d-none');
+
+        // 取得表單資料
+        const formData = $form.serialize();
+        const bookId = $form.find('[name="id"]').val();
+
+        // 使用你的 ApiService 進行編輯書籍
+        ApiService.editBook(formData, bookId)
+            .done(function(response) {
+                // 編輯書籍成功處理
+                if(response.status === 'success') {
+                    // 重新載入書籍列表
+                    renderBookList(page, perPage);
+                    // 關閉模態框
+                    $('#editBookModal').modal('hide');
+                    // 清空表單
+                    $form[0].reset();
+                }
+            })
+            .fail(function(xhr) {
+                // 編輯書籍失敗處理
+                const response = xhr.responseJSON;
+                let message = 'Failed to edit book. Please try again later.';
+
+                if(response && response.messages) {
+                    // 如果後端回傳的是 validation 錯誤陣列
+                    if(typeof response.messages === 'object') {
+                        message = Object.values(response.messages).join('<br>');
+                    }else {
+                        message = response.messages;
+                    }
+                }else if(response && response.error) {
+                    message = response.error;
+                }
+
+                $errorBox.html(message).removeClass('d-none');
+            })
+            .always(function() {
+                // 恢復按鈕狀態
+                $editBookBtn.prop('disabled', false);
+                $spinner.addClass('d-none');
+            });
+    });
+
     // 綁定分頁點擊事件
     $('#pagination-container').on('click', '.page-link', function(e) {
         e.preventDefault();
@@ -75,6 +132,23 @@ $(document).ready(function() {
     });
 });
 
+$(document).on('click', '.edit-book-btn', function() {
+    // 取得按鈕上的 JSON 資料
+    const book = JSON.parse(decodeURIComponent($(this).data('book')));
+    
+    const $modal = $('#editBookModal');
+    
+    // 填寫表單欄位
+    $modal.find('input[name="id"]').val(book.id); // 隱藏欄位存 ID
+    $modal.find('input[name="title"]').val(book.title);
+    $modal.find('input[name="author_name"]').val(book.author_name);
+    $modal.find('input[name="price"]').val(book.price);
+    $modal.find('input[name="year"]').val(book.year);
+
+    // 顯示 Modal
+    $modal.modal('show');
+});
+
 function renderBookList(page, perPage) {
     ApiService.getBooks(page, perPage).done(function(response) {
         const books = Array.isArray(response) ? response : response.data;
@@ -82,6 +156,9 @@ function renderBookList(page, perPage) {
 
         books.forEach(book => {
             const detailUrl = `/books/detail/${book.id}`;
+            
+            // 將 book 物件轉為 JSON 字串，方便存入 data 屬性 (注意引號處理)
+            const bookData = encodeURIComponent(JSON.stringify(book));
 
             html += `
                 <tr>
@@ -90,7 +167,7 @@ function renderBookList(page, perPage) {
                     <td>
                         <a href="${detailUrl}" class="text-decoration-none shadow-none" target="_blank">
                             <img src="/images/books/${book.image_url}" class="w-100" 
-                                 style="height: 200px; object-fit: contain; background: transparent;">
+                                 style="height: 120px; object-fit: contain; background: transparent;">
                         </a>
                     </td>
                     <td>${book.author_name}</td>
@@ -98,13 +175,18 @@ function renderBookList(page, perPage) {
                     <td>${book.created_at}</td>
                     <td>${book.updated_at}</td>
                     <td class="text-truncate" style="max-width: 150px;" title="${book.slug}">${book.slug}</td>
-                    <td>$${book.price.toFixed(2)}</td>
+                    <td>$${parseFloat(book.price).toFixed(2)}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-info edit-book-btn" data-book="${bookData}">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                    </td>
                 </tr>`;
         });
 
         $('#book-table-body').html(html);
 
-        if(response.meta.pagination) {
+        if(response.meta && response.meta.pagination) {
             currentPage = response.meta.pagination.page;
             renderPagination(response.meta.pagination.page, response.meta.pagination.lastPage);
         }
