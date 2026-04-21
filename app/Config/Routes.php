@@ -3,6 +3,7 @@
 use CodeIgniter\Router\RouteCollection;
 use App\Controllers\BookPage;
 use App\Controllers\UserPage;
+use App\Controllers\AdminPage;
 
 /**
  * @var RouteCollection $routes
@@ -30,4 +31,9 @@ $routes->group('books', ['filter' => 'jwt'], function($routes) {
     $routes->get('new', [BookPage::class, 'new'], [
         'filter' => 'role:1'
     ]);
+});
+$routes->group('admin', ['filter' => ['jwt', 'role:1']], function($routes) {
+    $routes->get('', [AdminPage::class, 'index']);
+    $routes->get('index', [AdminPage::class, 'index']);
+    $routes->get('booklist', [AdminPage::class, 'booklist']);
 });

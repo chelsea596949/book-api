@@ -17,6 +17,7 @@ $(document).ready(function() {
             <div class="d-flex align-items-center">
                 <span class="text-white-50 me-3">
                     Welcome, <strong class="text-white">${name}</strong>
+                    <a class="btn btn-sm btn-outline-info px-3" href="/admin">AdminPanel</a>
                 </span>
             </div>
         `);

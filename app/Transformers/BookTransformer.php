@@ -24,6 +24,8 @@ class BookTransformer extends BaseTransformer
             'image_url' => $resource['image_url'],
             'author_id' => $resource['author_id'],
             'author_name' => $resource['author_name'],
+            'created_at' => $resource['created_at'],
+            'updated_at' => $resource['updated_at'],
         ];
     }
 
