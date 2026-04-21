@@ -18,6 +18,8 @@ class AdminPage extends BaseController
     
     public function booklist()
     {
+        helper('form');
+
         $data = [
             'title' => 'Book List',
             'page_js' => [

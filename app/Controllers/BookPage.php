@@ -4,18 +4,18 @@ namespace App\Controllers;
 
 class BookPage extends BaseController
 {
-    public function new()
-    {
-        helper('form');
+    // public function new()
+    // {
+    //     helper('form');
 
-        $data = [
-            'title' => 'Create a book item',
-        ];
+    //     $data = [
+    //         'title' => 'Create a book item',
+    //     ];
 
-        return view('templates/header', $data)
-            . view('books/create')
-            . view('templates/footer');
-    }
+    //     return view('templates/header', $data)
+    //         . view('books/create')
+    //         . view('templates/footer');
+    // }
 
     public function index()
     {

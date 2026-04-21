@@ -27,11 +27,11 @@ $routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
 });
 
 // 需要驗證的
-$routes->group('books', ['filter' => 'jwt'], function($routes) {
-    $routes->get('new', [BookPage::class, 'new'], [
-        'filter' => 'role:1'
-    ]);
-});
+// $routes->group('books', ['filter' => 'jwt'], function($routes) {
+//     $routes->get('new', [BookPage::class, 'new'], [
+//         'filter' => 'role:1'
+//     ]);
+// });
 $routes->group('admin', ['filter' => ['jwt', 'role:1']], function($routes) {
     $routes->get('', [AdminPage::class, 'index']);
     $routes->get('index', [AdminPage::class, 'index']);
