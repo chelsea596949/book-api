@@ -1,69 +1,46 @@
-# CodeIgniter 4 Application Starter
+markdown_content = """# BookStore API Service
 
-## What is CodeIgniter?
+這是一個基於 **CodeIgniter 4** 框架開發的 RESTful API 專案，書籍管理系統。專案中導入了 **JWT (JSON Web Token)** 身份驗證機制，並利用 **Redis** 優化頻繁讀取的數據查詢。
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## 技術棧
+* **Backend:** PHP 8.x / CodeIgniter 4 [cite: 55, 67]
+* **Database:** MySQL 8.x [cite: 67]
+* **Caching:** Redis [cite: 54]
+* **Authentication:** JWT (Firebase/php-jwt) [cite: 56]
+* **Tools:** Composer, Docker [cite: 55, 79]
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## 核心功能
+* **RESTful 資源管理：** 實現完整的書籍、分類與使用者 CRUD 操作。
+* **JWT 安全驗證：** 透過 Service Layer 封裝驗證邏輯，確保 API 調用安全性。
+* **Redis 快取機制：** 針對熱點數據（如書籍清單）實作快取，大幅降低數據庫負載並提升回應速度。
+* **系統架構優化：**
+    * 採用 **MVC** 架構與 **Service Layer** 分層，確保程式碼具備高擴展性與可測試性 。
+    * 使用 **Database Indexing** 與語法調校，優化複雜查詢的執行效率。
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 快速啟動
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+### 1. 環境配置
+複製並重新命名環境變數檔案：
+```bash
+cp env .env
+```
 
-## Installation & updates
+### 2. 安裝套件
+使用 Composer 安裝所有相依依賴項目 ：
+```bash
+composer install
+```
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
-
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
-
-## Setup
-
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
-
-## Important Change with index.php
-
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
-
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
-
-**Please** read the user guide for a better explanation of how CI4 works!
-
-## Repository Management
-
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Server Requirements
-
-PHP version 8.2 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - The end of life date for PHP 8.1 was December 31, 2025.
-> - If you are still using below PHP 8.2, you should upgrade immediately.
-> - The end of life date for PHP 8.2 will be December 31, 2026.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+### 3. 資料庫遷移與填充
+執行 Migration 建立資料表結構 ：
+```bash
+php spark migrate
+php spark db:seed BookSeeder
+```
+## API 文件概覽
+本專案目前提供以下核心 API 節點，可配合 Postman 進行測試 ：
+* POST /api/login - 使用者登入並取得 Token。
+* GET /api/books - 取得所有書籍資訊（支援 Redis 快取讀取）。
+* POST /api/books - 新增書籍（具備管理員權限驗證）。
+* PUT /api/books/{id} - 編輯書籍（具備管理員權限驗證）。
+* DELETE /api/books/{id} - 刪除書籍（具備管理員權限驗證）。
