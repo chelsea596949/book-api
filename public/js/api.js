@@ -27,6 +27,11 @@ const ApiService = {
         return this.request('/books', 'GET', params);
     },
 
+    // 抓取單本書
+    getBookDetail: function(id) {
+        return this.request(`/books/${id}`, 'GET');
+    },
+
     // 新增書（傳入 FormData 或一般物件都行）
     createBook: function(data) {
         return this.request('/books', 'POST', data);
