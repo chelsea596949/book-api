@@ -26,6 +26,10 @@ $(document).ready(function() {
                     if(response.data.token) {
                         localStorage.setItem('auth_token', response.data.token);
                         localStorage.setItem('uid', response.data.uid);
+                        localStorage.setItem('login_iat', response.data.iat);
+                        localStorage.setItem('login_exp', response.data.exp);
+                        
+                        document.cookie = `auth_token=${response.data.token}; path=/; max-age=3600; SameSite=Strict`;
                     }
                     // 跳轉至首頁或書本清單
                     window.location.href = '/'; 

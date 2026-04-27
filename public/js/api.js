@@ -1,10 +1,13 @@
 const ApiService = {
     baseUrl: '/api',
 
-    request: function(endpoint, method='GET', data = null) {
+    request: function(endpoint, method='GET', data=null) {
         // 初始化基礎 AJAX 設定
         const ajaxConfig = {
             url: this.baseUrl + endpoint,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
+            },
             method: method,
             data: data,
             dataType: 'json'
@@ -47,3 +50,15 @@ const ApiService = {
         return this.request('/login', 'POST', data);
     }
 };
+
+$(document).ready(function() {
+    // 全局 AJAX 設置：在每次 AJAX 請求前自動帶入 JWT Token
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            const token = localStorage.getItem('auth_token');
+            if(token) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+        }
+    });
+});

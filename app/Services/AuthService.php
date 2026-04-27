@@ -23,14 +23,19 @@ class AuthService
             'uid' => $user['uid'],
             'level' => $user['level'],
         ];
-        $token = $jwt->generate($userInfo);
+        $token_res = $jwt->generate($userInfo);
+        $token = $token_res['token'];
+        $iat = $token_res['iat'];
+        $exp = $token_res['exp'];
 
-        session()->set('jwt', $token);
-        session()->set('userInfo', $userInfo);
+        // session()->set('jwt', $token);
+        // session()->set('userInfo', $userInfo);
 
         return api_success('', [
             'uid' => $user['uid'],
-            'token' => $token
+            'token' => $token,
+            'iat' => $iat,
+            'exp' => $exp
         ]);
     }
 }

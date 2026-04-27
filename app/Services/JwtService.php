@@ -13,18 +13,28 @@ class JwtService
     {
         $this->config = $config;
     }
-
-    public function generate(array $payload): string
+    
+    /**
+     * 修改後的回傳格式：包含 token, iat, exp 的陣列
+     */
+    public function generate(array $payload): array
     {
-        $time = time();
+        $iat = time();
+        $exp = $iat + $this->config->ttl;
 
         $data = [
-            'iat' => $time,
-            'exp' => $time + $this->config->ttl,
+            'iat' => $iat,
+            'exp' => $exp,
             'data' => $payload
         ];
 
-        return JWT::encode($data, $this->config->key, $this->config->algo);
+        $token = JWT::encode($data, $this->config->key, $this->config->algo);
+
+        return [
+            'token' => $token,
+            'iat'   => $iat,
+            'exp'   => $exp
+        ];
     }
 
     public function verify(string $token): object

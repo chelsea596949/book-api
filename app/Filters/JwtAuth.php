@@ -16,12 +16,15 @@ class JwtAuth implements FilterInterface
         $header = $request->getHeaderLine('Authorization');
         if($header && preg_match('/Bearer\s(\S+)/', $header, $matches)) {
             $token = $matches[1];
+        }else {
+            $request = service('request');
+            $token = $request->getCookie('auth_token'); 
         }
 
         // 再抓 Session（頁面用）
-        if(!$token) {
-            $token = session()->get('jwt');
-        }
+        // if(!$token) {
+        //     $token = session()->get('auth_token');
+        // }
 
         // 都沒有 token
         if(!$token) {
