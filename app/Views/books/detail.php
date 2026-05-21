@@ -1,7 +1,11 @@
 <div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-10"> <div class="card shadow-lg border-0">
+            <div class="col-lg-10">
+                <div class="mb-3">
+                    <a href="/" class="btn btn-secondary">← Back to Home</a>
+                </div>
+                <div class="card shadow-lg border-0">
                     <div class="row g-0">
                         <div class="col-md-5 d-flex align-items-center justify-content-centerp-4">
                             <img src="" class="img-fluid rounded shadow-sm" alt="書本封面" id="book_image">
