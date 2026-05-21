@@ -10,3 +10,6 @@
     <?php endif; ?>
 </head>
 <body data-bs-theme="dark">
+    <?php if (!isset($is_admin_page) || !$is_admin_page): ?>
+        <?= view('sticky_auth') ?>
+    <?php endif; ?>

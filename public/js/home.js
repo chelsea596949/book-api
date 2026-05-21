@@ -3,7 +3,7 @@ $(document).ready(function() {
 
     const token = localStorage.getItem('auth_token');
     const exp = localStorage.getItem('login_exp');
-    const $authZone = $('#auth-zone');
+    const $authZone = $('#auth-zone-sticky');
 
     // 檢查 token 是否存在且未過期
     if(token && exp && isTokenValid(exp)) {
@@ -19,11 +19,12 @@ $(document).ready(function() {
     // 渲染歡迎介面
     function renderWelcome(name) {
         $authZone.html(`
-            <div class="d-flex align-items-center">
-                <span class="text-white-50 me-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-white-50">
                     Welcome, <strong class="text-white">${name}</strong>
-                    <a class="btn btn-sm btn-outline-info px-3" href="/admin">AdminPanel</a>
                 </span>
+                <a class="btn btn-sm btn-outline-info px-2" href="/admin">Admin</a>
+                <button id="logout-btn" class="btn btn-sm btn-outline-light px-2">Logout</button>
             </div>
         `);
     }

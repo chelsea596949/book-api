@@ -8,6 +8,7 @@ class AdminPage extends BaseController
     {
         $data = [
             'title' => 'Admin Panel',
+            'is_admin_page' => true,
         ];
         return view('templates/header', $data)
             . view('admin/sidebar')
@@ -22,6 +23,7 @@ class AdminPage extends BaseController
 
         $data = [
             'title' => 'Book List',
+            'is_admin_page' => true,
             'page_js' => [
                 'js/admin/booklist.js', 
                 'js/api.js',
