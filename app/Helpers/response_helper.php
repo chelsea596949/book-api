@@ -33,17 +33,3 @@ if(!function_exists('api_response')) {
                         ->setJSON($payload);
     }
 }
-
-if(!function_exists('api_pagination')) {
-    function api_pagination($pager, int $perPage): array
-    {
-        return [
-            'page'        => $pager->getCurrentPage(),
-            'perPage'     => $perPage,
-            'total'       => $pager->getTotal(),
-            'lastPage'    => $pager->getPageCount(),
-            'hasNextPage' => $pager->hasMore(),
-            'hasPrevPage' => $pager->getCurrentPage() > 1,
-        ];
-    }
-}
