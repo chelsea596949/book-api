@@ -2,13 +2,18 @@ $(document).ready(function() {
     renderBookCarousel();
 
     const token = localStorage.getItem('auth_token');
+    const exp = localStorage.getItem('login_exp');
     const $authZone = $('#auth-zone');
 
-    if(token) {
+    // 檢查 token 是否存在且未過期
+    if(token && exp && isTokenValid(exp)) {
         // 從 localStorage 讀取儲存的用戶名 (推薦登入時順便存入)
         const username = localStorage.getItem('uid') || 'User';
         
         renderWelcome(username);
+    } else {
+        // token 過期或不存在，清除 localStorage
+        clearAuthData();
     }
 
     // 渲染歡迎介面
@@ -26,12 +31,26 @@ $(document).ready(function() {
     // 登出事件處理
     $(document).on('click', '#logout-btn', function() {
         if(confirm('Are you sure you want to log out?')) {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('uid');
+            clearAuthData();
             window.location.reload(); // 重新整理頁面回到未登入狀態
         }
     });
 });
+
+// 檢查 token 是否過期
+function isTokenValid(exp) {
+    const expirationTime = parseInt(exp) * 1000; // 轉換為毫秒
+    const currentTime = Date.now();
+    return currentTime < expirationTime;
+}
+
+// 清除認證資料
+function clearAuthData() {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('uid');
+    localStorage.removeItem('login_iat');
+    localStorage.removeItem('login_exp');
+}
 
 function renderBookCarousel() {
     ApiService.getBooks().done(function(response) {
