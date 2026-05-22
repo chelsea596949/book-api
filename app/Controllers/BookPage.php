@@ -21,13 +21,13 @@ class BookPage extends BaseController
     {
         $data = [
             'title' => 'That Bookstore.',
-            // 定義這頁專用的 CSS
             'page_css' => [
                 'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css',
                 'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css',
             ],
             'page_js' => [
                 'https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js',
+                'js/shared-header.js',
                 'js/home.js', 
                 'js/api.js',
             ],
@@ -41,6 +41,7 @@ class BookPage extends BaseController
     {
         $data = [
             'page_js' => [
+                'js/shared-header.js',
                 'js/detail.js', 
                 'js/api.js',
             ],
