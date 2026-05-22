@@ -149,6 +149,42 @@ $(document).on('click', '.edit-book-btn', function() {
     $modal.modal('show');
 });
 
+$(document).on('click', '.delete-book-btn', function() {
+    const bookId = $(this).data('id');
+    const $button = $(this);
+    
+    // 確認刪除
+    if(confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
+        $button.prop('disabled', true);
+        const originalHtml = $button.html();
+        $button.html('<span class="spinner-border spinner-border-sm" role="status"></span>');
+        
+        ApiService.deleteBook(bookId)
+            .done(function(response) {
+                if(response.status === 'success') {
+                    // 重新載入書籍列表
+                    renderBookList(currentPage, 10);
+                }
+            })
+            .fail(function(xhr) {
+                const response = xhr.responseJSON;
+                let message = 'Failed to delete book. Please try again later.';
+                
+                if(response && response.messages) {
+                    message = typeof response.messages === 'object' 
+                        ? Object.values(response.messages).join('\n')
+                        : response.messages;
+                } else if(response && response.error) {
+                    message = response.error;
+                }
+                
+                alert(message);
+                $button.prop('disabled', false);
+                $button.html(originalHtml);
+            });
+    }
+});
+
 function renderBookList(page, perPage) {
     ApiService.getBooks(page, perPage).done(function(response) {
         const books = Array.isArray(response) ? response : response.data;
@@ -179,6 +215,9 @@ function renderBookList(page, perPage) {
                     <td>
                         <button class="btn btn-sm btn-outline-info edit-book-btn" data-book="${bookData}">
                             <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger delete-book-btn ms-2" data-id="${book.id}">
+                            <i class="bi bi-trash"></i> Delete
                         </button>
                     </td>
                 </tr>`;

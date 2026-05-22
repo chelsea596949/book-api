@@ -45,6 +45,11 @@ const ApiService = {
         return this.request(`/books/${id}`, 'PUT', data);
     },
 
+    // 刪除書
+    deleteBook: function(id) {
+        return this.request(`/books/${id}`, 'DELETE');
+    },
+
     // 登入
     login: function(data) {
         return this.request('/login', 'POST', data);
