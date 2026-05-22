@@ -2,7 +2,7 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
-use App\DTO\User\RegistrationDTO;
+use App\DTO\User\UserRegistrationDTO;
 
 class Auth extends BaseController
 {
@@ -20,7 +20,7 @@ class Auth extends BaseController
     {
         $data = $this->request->getPost();
 
-        if(!$this->validate(RegistrationDTO::rules())) {
+        if(!$this->validate(UserRegistrationDTO::rules())) {
             return api_response(
                 $this->response,
                 api_error(

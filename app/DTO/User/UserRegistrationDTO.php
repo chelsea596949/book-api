@@ -1,7 +1,7 @@
 <?php
 namespace App\DTO\User;
 
-class RegistrationDTO
+class UserRegistrationDTO
 {
     public string $uid;
     public string $password;

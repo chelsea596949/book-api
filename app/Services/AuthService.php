@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-use App\DTO\User\RegistrationDTO;
+use App\DTO\User\UserRegistrationDTO;
 
 class AuthService
 {
@@ -43,7 +43,7 @@ class AuthService
 
     public function register(array $data)
     {
-        $dto = RegistrationDTO::fromArray($data);
+        $dto = UserRegistrationDTO::fromArray($data);
 
         $model = model('UserModel');
 
