@@ -57,6 +57,7 @@ function renderWelcome(name, $authZone) {
 // 渲染登入按鈕 (預設狀態)
 function renderLoginButton($authZone) {
     $authZone.html(`
+        <a href="/users/register" class="btn btn-outline-light px-4">SIGN UP</a>
         <a href="/users/login" class="btn btn-outline-light px-4">LOG IN</a>
     `);
 }

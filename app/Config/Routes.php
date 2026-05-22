@@ -12,7 +12,9 @@ $routes->get('/', 'BookPage::index');
 
 // 不需要驗證的
 $routes->get('users/login', [UserPage::class, 'login']);
+$routes->get('users/register', [UserPage::class, 'register']);
 $routes->post('api/login', 'Api\Auth::login');
+$routes->post('api/register', 'Api\Auth::register');
 $routes->get('api/books', 'Api\Books::getIndex');
 $routes->get('api/books/(:num)', 'Api\Books::getIndex/$1');
 $routes->get('books/detail/(:num)', 'BookPage::detail/$1');

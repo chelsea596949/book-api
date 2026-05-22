@@ -20,4 +20,21 @@ class UserPage extends BaseController
             . view('users/login')
             . view('templates/footer');
     }
+
+    public function register()
+    {
+        helper('form');
+
+        $data = [
+            'title' => 'Sign Up',
+            'page_js' => [
+                'js/register.js', 
+                'js/api.js',
+            ],
+        ];
+
+        return view('templates/header', $data)
+            . view('users/register')
+            . view('templates/footer');
+    }
 }

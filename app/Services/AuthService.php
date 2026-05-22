@@ -1,6 +1,8 @@
 <?php
 namespace App\Services;
 
+use App\DTO\User\RegistrationDTO;
+
 class AuthService
 {
     public function login(array $data)
@@ -37,5 +39,30 @@ class AuthService
             'iat' => $iat,
             'exp' => $exp
         ]);
+    }
+
+    public function register(array $data)
+    {
+        $dto = RegistrationDTO::fromArray($data);
+
+        $model = model('UserModel');
+
+        // Create new user with default level 2
+        $newUser = [
+            'uid' => $dto->uid,
+            'password' => password_hash($dto->password, PASSWORD_BCRYPT),
+            'name' => $dto->name,
+            'level' => 2,
+        ];
+
+        $result = $model->insert($newUser);
+
+        if($result) {
+            return api_success('User registered successfully', [
+                'uid' => $dto->uid
+            ]);
+        } else {
+            return api_error('Failed to register user', [], 500);
+        }
     }
 }

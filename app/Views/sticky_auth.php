@@ -1,7 +1,8 @@
 <!-- Sticky Auth Component -->
 <div id="sticky-auth-container" class="sticky-auth-wrapper">
     <div id="auth-zone-sticky" class="auth-zone-sticky">
-        <!-- 登入按钮 (默认显示) -->
+        <!-- 登入/註冊按钮 (默认显示) -->
+        <a href="/users/register" class="btn btn-outline-light px-4">SIGN UP</a>
         <a href="/users/login" class="btn btn-outline-light px-4">LOG IN</a>
     </div>
 </div>

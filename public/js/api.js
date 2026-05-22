@@ -48,6 +48,11 @@ const ApiService = {
     // 登入
     login: function(data) {
         return this.request('/login', 'POST', data);
+    },
+
+    // 註冊
+    register: function(data) {
+        return this.request('/register', 'POST', data);
     }
 };
 
