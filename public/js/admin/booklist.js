@@ -130,6 +130,62 @@ $(document).ready(function() {
             renderBookList(currentPage, perPage); // 重新呼叫抓取資料函式
         }
     });
+
+    // 編輯圖片表單提交
+    $('#edit-image-form').on('submit', function(e) {
+        e.preventDefault();
+        
+        const $form = $(this);
+        const $errorBox = $('#edit-image-error-message');
+        const $submitBtn = $('#edit-image-btn');
+        const $spinner = $('#edit-image-btn-spinner');
+        
+        // 清空並隱藏錯誤訊息
+        $errorBox.addClass('d-none').empty();
+        
+        // 按鈕讀取中狀態
+        $submitBtn.prop('disabled', true);
+        $spinner.removeClass('d-none');
+        
+        // 取得表單資料（包括圖片檔案）
+        const formElement = $(this)[0];
+        const formData = new FormData(formElement);
+        const bookId = $form.find('[name="id"]').val();
+        
+        // 使用 ApiService 進行編輯圖片
+        ApiService.editBook(formData, bookId)
+            .done(function(response) {
+                if(response.status === 'success') {
+                    // 重新載入書籍列表
+                    renderBookList(currentPage, 10);
+                    // 關閉模態框
+                    $('#editImageModal').modal('hide');
+                    // 清空表單
+                    $form[0].reset();
+                }
+            })
+            .fail(function(xhr) {
+                const response = xhr.responseJSON;
+                let message = 'Failed to update image. Please try again later.';
+                
+                if(response && response.messages) {
+                    if(typeof response.messages === 'object') {
+                        message = Object.values(response.messages).join('<br>');
+                    } else {
+                        message = response.messages;
+                    }
+                } else if(response && response.error) {
+                    message = response.error;
+                }
+                
+                $errorBox.html(message).removeClass('d-none');
+            })
+            .always(function() {
+                // 恢復按鈕狀態
+                $submitBtn.prop('disabled', false);
+                $spinner.addClass('d-none');
+            });
+    });
 });
 
 $(document).on('click', '.edit-book-btn', function() {
@@ -147,6 +203,44 @@ $(document).on('click', '.edit-book-btn', function() {
 
     // 顯示 Modal
     $modal.modal('show');
+});
+
+$(document).on('click', '.edit-image-btn', function() {
+    const bookId = $(this).data('id');
+    const imageUrl = $(this).data('image');
+    const bookTitle = $(this).data('title');
+    
+    const $modal = $('#editImageModal');
+    
+    // 設定 book ID 和書籍標題
+    $modal.find('input[name="id"]').val(bookId);
+    $modal.find('.book-title-label').text(bookTitle);
+    
+    // 顯示原圖片預覽
+    $modal.find('#current-image-preview').attr('src', '/images/books/' + imageUrl);
+    
+    // 清空新圖片預覽和檔案選擇
+    $modal.find('#new-image-preview').attr('src', '').addClass('d-none');
+    $modal.find('input[name="book_image"]').val('');
+    $modal.find('.no-image-message').removeClass('d-none');
+    
+    // 顯示 Modal
+    $modal.modal('show');
+});
+
+// 圖片檔案選擇後的預覽
+$(document).on('change', '#editImageModal input[name="book_image"]', function() {
+    const file = this.files[0];
+    
+    if(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const $modal = $('#editImageModal');
+            $modal.find('#new-image-preview').attr('src', e.target.result).removeClass('d-none');
+            $modal.find('.no-image-message').addClass('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
 });
 
 $(document).on('click', '.delete-book-btn', function() {
@@ -215,6 +309,9 @@ function renderBookList(page, perPage) {
                     <td>
                         <button class="btn btn-sm btn-outline-info edit-book-btn" data-book="${bookData}">
                             <i class="bi bi-pencil"></i> Edit
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning edit-image-btn ms-2" data-id="${book.id}" data-image="${book.image_url}" data-title="${book.title}">
+                            <i class="bi bi-image"></i> Edit Image
                         </button>
                         <button class="btn btn-sm btn-outline-danger delete-book-btn ms-2" data-id="${book.id}">
                             <i class="bi bi-trash"></i> Delete

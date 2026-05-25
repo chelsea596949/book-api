@@ -144,3 +144,54 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="editImageModal" tabindex="-1" aria-labelledby="editImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg"> <div class="modal-content bg-dark text-white border-secondary">
+      
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title fs-3 fw-bold" id="editImageModalLabel">Edit Book Image - <span class="book-title-label"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <?php if (session()->getFlashdata('error')) : ?>
+            <div class="alert alert-danger" id="edit-image-error-message"><?= session()->getFlashdata('error') ?></div>
+        <?php endif; ?>
+         
+        <form action="/api/books" method="put" enctype="multipart/form-data" id="edit-image-form">
+            <?= csrf_field() ?>
+
+            <input type="text" name="id" class="form-control bg-secondary text-white border-0" value="" required hidden="true">
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">Current Image</label>
+                    <img id="current-image-preview" src="" class="w-100 rounded" style="height: 300px; object-fit: contain; background: #333;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold">New Image Preview</label>
+                    <div id="new-image-container" style="height: 300px; background: #333; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center;">
+                        <img id="new-image-preview" src="" class="w-100 rounded d-none" style="height: 300px; object-fit: contain;">
+                        <span class="no-image-message text-muted">Select an image to preview</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="book_image" class="form-label">Choose New Image</label>
+                <input type="file" name="book_image" class="form-control bg-secondary text-white border-0" accept="image/jpeg, image/png" required>
+            </div>
+
+            <div class="modal-footer border-0 px-0 pb-0">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning px-4" id="edit-image-btn">
+                  <span id="edit-image-btn-spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                  Update Image
+                </button>
+            </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
