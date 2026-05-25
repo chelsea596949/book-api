@@ -38,7 +38,7 @@ class Books extends BaseController
      */
     public function putIndex(int $id): ResponseInterface
     {
-        $data = $this->request->getRawInput();
+        $data = $this->request->getPost();
 
         // $rules = [
         //     'title' => 'required|string|max_length[255]',
