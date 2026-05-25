@@ -40,9 +40,22 @@ const ApiService = {
         return this.request('/books', 'POST', data);
     },
 
-    // 編輯書（傳入 FormData 或一般物件都行）
+    // 編輯書（自動相容一般物件與帶圖片的FormData）
     editBook: function(data, id) {
-        return this.request(`/books/${id}`, 'PUT', data);
+        // 預設是標準的PUT
+        let method = 'PUT';
+        
+        // 如果傳進來的是 FormData，就把實際Method改為POST，並手動塞入_method='PUT'
+        if(data instanceof FormData) {
+            method = 'POST';
+            
+            // 檢查是否已經有塞過_method，沒有的話再補，避免重複塞入
+            if(!data.has('_method')) {
+                data.append('_method', 'PUT');
+            }
+        }
+
+        return this.request(`/books/${id}`, method, data);
     },
 
     // 刪除書

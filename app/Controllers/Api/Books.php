@@ -3,7 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
-use App\Transformers\BookTransformer;
+// use App\Transformers\BookTransformer;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Api\ResponseTrait;
 use App\DTO\Book\BookQueryDTO;
@@ -40,60 +40,48 @@ class Books extends BaseController
     {
         $data = $this->request->getPost();
 
-        // $rules = [
-        //     'title' => 'required|string|max_length[255]',
-        //     'author_id' => 'required|integer|is_not_unique[authors.id]',
-        //     'year' => 'required|integer|greater_than_equal_to[2000]|less_than_equal_to[' . date('Y') . ']',
-        // ];
-
-        // if(!$this->validate($rules)) {
-        //     return api_response(
-        //         $this->response, 
-        //         api_error(
-        //             'Validation failed', 
-        //             $this->validator->getErrors(), 
-        //             400
-        //         )
-        //     );
-        // }
-
-        if(!$this->validate(BookEditDTO::rules())) {
+        // 改用validateData()來驗證合併後的陣列
+        if(!$this->validateData($data, BookEditDTO::rules())) {
             return api_response(
                 $this->response,
                 api_error(
                     'Validation failed',
-                    $this->validator->getErrors(),
+                    $this->validator->getErrors(), // 這裡現在絕對能噴出 max_size 的錯誤訊息了！
                     400
                 )
             );
         }
 
-        // 使用 FileService 處理圖片
-        $imageName = service('fileService')->uploadImage($this->request->getFile('book_image'));
-        if($imageName) {
-            $data['image_url'] = $imageName;
+        // 取得圖片檔案（傳入在HTML input的name，例如book_image）
+        $file = $this->request->getFile('book_image');
+        
+        // 檢查檔案是否「真的有上傳成功」且「沒有損壞或被移動」
+        if($file && $file->isValid() && !$file->hasMoved()) {
+            // 呼叫FileService上傳
+            $imageName = service('fileService')->uploadImage($file);
+            
+            if($imageName) {
+                $data['image_url'] = $imageName;
+            }
         }
         
-        $dto = BookEditDTO::fromArray($data);
+        // 將合併了圖片名稱的$data封裝進DTO並執行 Service
+        try {
+            $dto = BookEditDTO::fromArray($data);
+            $responseDTO = service('bookService')->editBook($dto, $id);
 
-        $responseDTO = service('bookService')->editBook($dto, $id);
-
-        // $model = model('BookModel');
-
-        // if(!$model->find($id)) {
-        //     return api_response($this->response, api_error('Book not found', [], 404));
-        // }
-
-        // $model->update($id, $data);
-
-        // $updatedBook = $model->withAuthorInfo()->find($id);
-
-        // return $this->respond((new BookTransformer())->transform($updatedBook));
-
-        return api_response(
-            $this->response,
-            $responseDTO->toApiFormat()
-        );
+            return api_response(
+                $this->response,
+                $responseDTO->toApiFormat()
+            );
+            
+        } catch(\Exception $e) {
+            // 捕捉Service層可能拋出的異常（例如找不到書籍）
+            return api_response(
+                $this->response, 
+                api_error($e->getMessage(), [], 500)
+            );
+        }
     }
 
     /**

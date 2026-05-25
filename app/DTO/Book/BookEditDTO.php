@@ -12,12 +12,20 @@ class BookEditDTO
     public static function rules(): array
     {
         return [
-            // 使用 permit_empty，確保沒傳或傳空值時不會報錯
             'title'       => 'permit_empty|string|max_length[255]|alpha_numeric_punct',
             'author_name' => 'permit_empty|string|max_length[255]|regex_match[/^[\p{Han}a-zA-Z0-9\s\.\-\_]+$/u]',
             'year'        => 'permit_empty|integer|greater_than_equal_to[0]|less_than_equal_to['.date('Y').']',
             'price'       => 'permit_empty|numeric|greater_than_equal_to[0]',
-            'book_image'  => 'permit_empty|max_size[book_image,2048]|is_image[book_image]|mime_in[book_image,image/jpg,image/jpeg,image/png]',
+            
+            'book_image'  => [
+                'rules' => 'if_exist|max_size[2048]|is_image[book_image]|mime_in[book_image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => '圖片上傳失敗，可能是伺服器限制或檔案損壞。',
+                    'max_size' => '圖片檔案太大，請勿超過2MB。',
+                    'is_image' => '所選檔案不是有效的圖片。',
+                    'mime_in'  => '圖片格式不符，僅支援JPG, JPEG, PNG。'
+                ]
+            ]
         ];
     }
 

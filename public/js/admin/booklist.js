@@ -140,27 +140,27 @@ $(document).ready(function() {
         const $submitBtn = $('#edit-image-btn');
         const $spinner = $('#edit-image-btn-spinner');
         
-        // 清空並隱藏錯誤訊息
         $errorBox.addClass('d-none').empty();
-        
-        // 按鈕讀取中狀態
         $submitBtn.prop('disabled', true);
         $spinner.removeClass('d-none');
         
-        // 取得表單資料（包括圖片檔案）
+        // 取得表單原生DOM
         const formElement = $(this)[0];
+        
+        // 建立FormData
         const formData = new FormData(formElement);
+        
+        // 手動塞入_method欄位，值為PUT
+        formData.append('_method', 'PUT'); 
+        
         const bookId = $form.find('[name="id"]').val();
         
-        // 使用 ApiService 進行編輯圖片
+        // 呼叫 ApiService
         ApiService.editBook(formData, bookId)
             .done(function(response) {
                 if(response.status === 'success') {
-                    // 重新載入書籍列表
                     renderBookList(currentPage, 10);
-                    // 關閉模態框
                     $('#editImageModal').modal('hide');
-                    // 清空表單
                     $form[0].reset();
                 }
             })
@@ -181,7 +181,6 @@ $(document).ready(function() {
                 $errorBox.html(message).removeClass('d-none');
             })
             .always(function() {
-                // 恢復按鈕狀態
                 $submitBtn.prop('disabled', false);
                 $spinner.addClass('d-none');
             });
