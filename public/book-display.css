@@ -1,0 +1,232 @@
+/* Book Display Styles */
+
+:root {
+    --card-border-color: #dee2e6;
+    --card-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Grid View */
+.book-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--card-border-color);
+    background-color: #fff;
+}
+
+[data-bs-theme="dark"] .book-card {
+    background-color: #212529;
+    border-color: #495057;
+}
+
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--card-hover-shadow) !important;
+}
+
+[data-bs-theme="dark"] .book-card:hover {
+    box-shadow: 0 8px 16px rgba(255, 255, 255, 0.15) !important;
+}
+
+.book-image-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e9ecef 100%);
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .book-image-wrapper {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%);
+}
+
+.book-image-wrapper img {
+    transition: transform 0.3s ease;
+}
+
+.book-card:hover .book-image-wrapper img {
+    transform: scale(1.05);
+}
+
+/* List View */
+.list-view {
+    background-color: #fff;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+[data-bs-theme="dark"] .list-view {
+    background-color: #212529;
+}
+
+.list-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-item:hover {
+    background-color: #f8f9fa;
+}
+
+[data-bs-theme="dark"] .list-item:hover {
+    background-color: #343a40;
+}
+
+.list-item:last-child {
+    border-bottom: none !important;
+}
+
+.list-item img {
+    display: block;
+    object-fit: cover;
+}
+
+/* Pagination */
+.pagination {
+    gap: 0.25rem;
+}
+
+.page-link {
+    color: #0d6efd;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+}
+
+.page-link:hover {
+    background-color: #e7f1ff;
+    color: #0b5ed7;
+}
+
+[data-bs-theme="dark"] .page-link {
+    color: #0d6efd;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .page-link:hover {
+    background-color: #1a472a;
+    color: #0d9fff;
+}
+
+.page-item.active .page-link {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+[data-bs-theme="dark"] .page-item.disabled .page-link {
+    background-color: #212529;
+    border-color: #495057;
+}
+
+#pageNumbersContainer .btn-outline-primary {
+    border-color: #0d6efd;
+    color: #0d6efd;
+}
+
+#pageNumbersContainer .btn-outline-primary:hover {
+    background-color: #e7f1ff;
+    border-color: #0b5ed7;
+}
+
+#pageNumbersContainer .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Loading & Error States */
+#loadingIndicator {
+    min-height: 300px;
+}
+
+#errorMessage {
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* View Toggle Buttons */
+.btn-outline-primary:has(+ #listViewBtn),
+.btn-outline-secondary {
+    margin-left: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .row-cols-md-2 {
+        --bs-columns: 2;
+    }
+    
+    .row-cols-lg-4 {
+        --bs-columns: 2;
+    }
+    
+    .row-cols-xl-5 {
+        --bs-columns: 2;
+    }
+
+    .list-item {
+        flex-wrap: wrap;
+    }
+
+    .list-item > div:first-child {
+        width: 60px !important;
+        height: 90px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .row-cols-1 {
+        --bs-columns: 1;
+    }
+
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .book-card {
+        margin-bottom: 1rem;
+    }
+
+    #pageNumbersContainer {
+        justify-content: center !important;
+    }
+
+    #pageNumbersContainer .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Dark mode adjustments */
+[data-bs-theme="dark"] .list-view {
+    background-color: #212529;
+}
+
+[data-bs-theme="dark"] .list-item {
+    border-bottom-color: #495057;
+}
+
+[data-bs-theme="dark"] .book-card h5,
+[data-bs-theme="dark"] .list-item h5 {
+    color: #fff;
+}
+
+[data-bs-theme="dark"] .book-card .text-muted,
+[data-bs-theme="dark"] .list-item .text-muted {
+    color: #adb5bd !important;
+}

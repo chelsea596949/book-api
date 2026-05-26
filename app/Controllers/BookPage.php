@@ -50,4 +50,22 @@ class BookPage extends BaseController
             . view('books/detail')
             . view('templates/footer');
     }
+
+    public function display()
+    {
+        $data = [
+            'title' => 'Books Collection',
+            'page_css' => [
+                'book-display.css',
+            ],
+            'page_js' => [
+                'js/shared-header.js',
+                'js/book-display.js',
+                'js/api.js',
+            ],
+        ];
+        return view('templates/header', $data)
+            . view('books/display')
+            . view('templates/footer');
+    }
 }

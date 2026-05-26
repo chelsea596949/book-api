@@ -9,6 +9,8 @@ use App\Controllers\AdminPage;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'BookPage::index');
+$routes->get('books/display', 'BookPage::display');
+$routes->get('books/detail/(:num)', 'BookPage::detail/$1');
 
 // 不需要驗證的
 $routes->get('users/login', [UserPage::class, 'login']);
@@ -17,9 +19,6 @@ $routes->post('api/login', 'Api\Auth::login');
 $routes->post('api/register', 'Api\Auth::register');
 $routes->get('api/books', 'Api\Books::getIndex');
 $routes->get('api/books/(:num)', 'Api\Books::getIndex/$1');
-$routes->get('books/detail/(:num)', 'BookPage::detail/$1');
-
-// 需要驗證的
 $routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
     // admin only
     $routes->group('', ['filter' => 'role:1'], function($routes) {
