@@ -83,6 +83,20 @@
     gap: 0.25rem;
 }
 
+#paginationTopContainer {
+    margin-bottom: 2rem;
+}
+
+#paginationBottomContainer {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #dee2e6;
+}
+
+[data-bs-theme="dark"] #paginationBottomContainer {
+    border-top-color: #495057;
+}
+
 .page-link {
     color: #0d6efd;
     border: 1px solid #dee2e6;
@@ -123,17 +137,23 @@
     border-color: #495057;
 }
 
-#pageNumbersContainer .btn-outline-primary {
+#pageNumbersContainer .btn-outline-primary,
+#pageNumbersTopContainer .btn-outline-primary,
+#pageNumbersBottomContainer .btn-outline-primary {
     border-color: #0d6efd;
     color: #0d6efd;
 }
 
-#pageNumbersContainer .btn-outline-primary:hover {
+#pageNumbersContainer .btn-outline-primary:hover,
+#pageNumbersTopContainer .btn-outline-primary:hover,
+#pageNumbersBottomContainer .btn-outline-primary:hover {
     background-color: #e7f1ff;
     border-color: #0b5ed7;
 }
 
-#pageNumbersContainer .btn-primary {
+#pageNumbersContainer .btn-primary,
+#pageNumbersTopContainer .btn-primary,
+#pageNumbersBottomContainer .btn-primary {
     background-color: #0d6efd;
     border-color: #0d6efd;
 }

@@ -16,9 +16,13 @@ const BookDisplay = {
         document.getElementById('gridViewBtn').addEventListener('click', () => this.switchView('grid'));
         document.getElementById('listViewBtn').addEventListener('click', () => this.switchView('list'));
 
-        // Pagination
-        document.getElementById('prevPageBtn').addEventListener('click', () => this.previousPage());
-        document.getElementById('nextPageBtn').addEventListener('click', () => this.nextPage());
+        // Top pagination
+        document.getElementById('prevPageTopBtn').addEventListener('click', () => this.previousPage());
+        document.getElementById('nextPageTopBtn').addEventListener('click', () => this.nextPage());
+
+        // Bottom pagination
+        document.getElementById('prevPageBottomBtn').addEventListener('click', () => this.previousPage());
+        document.getElementById('nextPageBottomBtn').addEventListener('click', () => this.nextPage());
     },
 
     switchView: function(view) {
@@ -44,7 +48,8 @@ const BookDisplay = {
         document.getElementById('errorMessage').style.display = 'none';
         document.getElementById('gridContainer').innerHTML = '';
         document.getElementById('listContainer').innerHTML = '';
-        document.getElementById('paginationContainer').style.display = 'none';
+        document.getElementById('paginationTopContainer').style.display = 'none';
+        document.getElementById('paginationBottomContainer').style.display = 'none';
         document.getElementById('noResults').style.display = 'none';
 
         ApiService.getBooks(page, this.perPage)
@@ -149,22 +154,33 @@ const BookDisplay = {
     },
 
     updatePagination: function() {
-        const paginationContainer = document.getElementById('paginationContainer');
-        const currentPageSpan = document.getElementById('currentPage');
-        const totalPagesSpan = document.getElementById('totalPages');
-        const pageNumbersContainer = document.getElementById('pageNumbersContainer');
+        // Update top pagination
+        this.updatePaginationUI('Top');
+        // Update bottom pagination
+        this.updatePaginationUI('Bottom');
+    },
+
+    updatePaginationUI: function(position) {
+        const paginationContainer = document.getElementById(`pagination${position}Container`);
+        const currentPageSpan = document.getElementById(`currentPage${position}`);
+        const totalPagesSpan = document.getElementById(`totalPages${position}`);
+        const pageNumbersContainer = document.getElementById(`pageNumbers${position}Container`);
+        const prevPageItem = document.getElementById(`prevPage${position}Item`);
+        const prevPageBtn = document.getElementById(`prevPage${position}Btn`);
+        const nextPageItem = document.getElementById(`nextPage${position}Item`);
+        const nextPageBtn = document.getElementById(`nextPage${position}Btn`);
 
         // Update page numbers
         currentPageSpan.textContent = this.currentPage;
         totalPagesSpan.textContent = this.totalPages;
 
         // Update prev button state
-        document.getElementById('prevPageItem').classList.toggle('disabled', this.currentPage <= 1);
-        document.getElementById('prevPageBtn').disabled = this.currentPage <= 1;
+        prevPageItem.classList.toggle('disabled', this.currentPage <= 1);
+        prevPageBtn.disabled = this.currentPage <= 1;
 
         // Update next button state
-        document.getElementById('nextPageItem').classList.toggle('disabled', this.currentPage >= this.totalPages);
-        document.getElementById('nextPageBtn').disabled = this.currentPage >= this.totalPages;
+        nextPageItem.classList.toggle('disabled', this.currentPage >= this.totalPages);
+        nextPageBtn.disabled = this.currentPage >= this.totalPages;
 
         // Generate page number buttons (show max 5 pages)
         pageNumbersContainer.innerHTML = '';
