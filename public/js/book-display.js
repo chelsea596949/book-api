@@ -1,6 +1,6 @@
 const BookDisplay = {
     currentPage: 1,
-    perPage: 20,
+    perPage: 10,
     totalBooks: 0,
     totalPages: 1,
     currentView: 'grid', // 'grid' or 'list'
