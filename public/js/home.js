@@ -19,7 +19,7 @@ function renderBookCarousel() {
             html += `
                 <div class="slick-item">
                     <a href="${detailUrl}" class="text-decoration-none shadow-none" target="_blank" data-bs-toggle="tooltip" data-bs-title="${book.title}">
-                        <img src="/images/books/${book.image_url}" class="w-100" 
+                        <img src="${book.image_url || '/images/default-book.png'}" class="w-100" 
                              style="height: 500px; object-fit: contain; background: transparent;">
                     </a>
                 </div>`;

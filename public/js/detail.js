@@ -9,7 +9,7 @@ function renderBookDetail(id) {
     ApiService.getBookDetail(id).done(function(response) {
         const book = response.data;
 
-        $("#book_image").attr("src", `/images/books/${book.image_url}`);
+        $("#book_image").attr("src", book.image_url || '/images/default-book.png');
         $("#book_title").text(book.title);
         $("#book_author").text(book.author_name);
         $("#book_year").text(book.year);

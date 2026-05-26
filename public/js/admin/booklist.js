@@ -216,7 +216,7 @@ $(document).on('click', '.edit-image-btn', function() {
     $modal.find('.book-title-label').text(bookTitle);
     
     // 顯示原圖片預覽
-    $modal.find('#current-image-preview').attr('src', '/images/books/' + imageUrl);
+    $modal.find('#current-image-preview').attr('src', imageUrl);
     
     // 清空新圖片預覽和檔案選擇
     $modal.find('#new-image-preview').attr('src', '').addClass('d-none');
@@ -295,7 +295,7 @@ function renderBookList(page, perPage) {
                     <td class="text-truncate" style="max-width: 150px;" title="${book.title}">${book.title}</td>
                     <td>
                         <a href="${detailUrl}" class="text-decoration-none shadow-none" target="_blank">
-                            <img src="/images/books/${book.image_url}" class="w-100" 
+                            <img src="${book.image_url || '/images/default-book.png'}" class="w-100" 
                                  style="height: 120px; object-fit: contain; background: transparent;">
                         </a>
                     </td>

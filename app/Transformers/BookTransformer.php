@@ -15,13 +15,18 @@ class BookTransformer extends BaseTransformer
      */
     public function toArray(mixed $resource): array
     {
+        $imageUrl = null;
+        if (!empty($resource['image_url'])) {
+            $imageUrl = base_url('images/books/' . $resource['image_url']);
+        }
+
         return [
             'id'    => $resource['id'],
             'title' => $resource['title'],
             'slug'  => $resource['slug'],
             'year'  => $resource['year'],
             'price' => $resource['price'],
-            'image_url' => $resource['image_url'],
+            'image_url' => $imageUrl,
             'author_id' => $resource['author_id'],
             'author_name' => $resource['author_name'],
             'created_at' => $resource['created_at'],
