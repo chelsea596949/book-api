@@ -21,25 +21,13 @@
     </div>
 
     <!-- Top Pagination -->
-    <nav aria-label="Page navigation top" class="mb-4" id="paginationTopContainer" style="display: none;">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" id="prevPageTopItem">
-                <button class="page-link" id="prevPageTopBtn">Previous</button>
-            </li>
-            <li class="page-item active">
-                <span class="page-link">
-                    Page <span id="currentPageTop">1</span> of <span id="totalPagesTop">1</span>
-                </span>
-            </li>
-            <li class="page-item" id="nextPageTopItem">
-                <button class="page-link" id="nextPageTopBtn">Next</button>
-            </li>
-        </ul>
-        
-        <!-- Page number buttons -->
-        <div class="d-flex justify-content-center flex-wrap gap-2" id="pageNumbersTopContainer">
-            <!-- Page numbers will be added here -->
+    <nav aria-label="Page navigation" class="mb-4" id="paginationTop" style="display: none;">
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-3">
+            <button class="btn btn-sm btn-outline-primary" id="prevBtnTop">← Previous</button>
+            <span class="text-muted"><span id="pageInfoTop">Page 1 of 1</span></span>
+            <button class="btn btn-sm btn-outline-primary" id="nextBtnTop">Next →</button>
         </div>
+        <div class="d-flex justify-content-center flex-wrap gap-2" id="pageButtonsTop"></div>
     </nav>
 
     <!-- Loading Indicator -->
@@ -64,25 +52,13 @@
     </div>
 
     <!-- Bottom Pagination -->
-    <nav aria-label="Page navigation bottom" class="mt-5 pt-4 border-top" id="paginationBottomContainer" style="display: none;">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" id="prevPageBottomItem">
-                <button class="page-link" id="prevPageBottomBtn">Previous</button>
-            </li>
-            <li class="page-item active">
-                <span class="page-link">
-                    Page <span id="currentPageBottom">1</span> of <span id="totalPagesBottom">1</span>
-                </span>
-            </li>
-            <li class="page-item" id="nextPageBottomItem">
-                <button class="page-link" id="nextPageBottomBtn">Next</button>
-            </li>
-        </ul>
-        
-        <!-- Page number buttons -->
-        <div class="d-flex justify-content-center flex-wrap gap-2 mt-3" id="pageNumbersBottomContainer">
-            <!-- Page numbers will be added here -->
+    <nav aria-label="Page navigation" class="mt-5 pt-4 border-top" id="paginationBottom" style="display: none;">
+        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 mb-3">
+            <button class="btn btn-sm btn-outline-primary" id="prevBtnBottom">← Previous</button>
+            <span class="text-muted"><span id="pageInfoBottom">Page 1 of 1</span></span>
+            <button class="btn btn-sm btn-outline-primary" id="nextBtnBottom">Next →</button>
         </div>
+        <div class="d-flex justify-content-center flex-wrap gap-2" id="pageButtonsBottom"></div>
     </nav>
 
     <!-- No Results -->

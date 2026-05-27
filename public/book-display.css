@@ -83,17 +83,17 @@
     gap: 0.25rem;
 }
 
-#paginationTopContainer {
+#paginationTop {
     margin-bottom: 2rem;
 }
 
-#paginationBottomContainer {
+#paginationBottom {
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid #dee2e6;
 }
 
-[data-bs-theme="dark"] #paginationBottomContainer {
+[data-bs-theme="dark"] #paginationBottom {
     border-top-color: #495057;
 }
 
@@ -137,23 +137,20 @@
     border-color: #495057;
 }
 
-#pageNumbersContainer .btn-outline-primary,
-#pageNumbersTopContainer .btn-outline-primary,
-#pageNumbersBottomContainer .btn-outline-primary {
+#pageButtonsTop .btn-outline-primary,
+#pageButtonsBottom .btn-outline-primary {
     border-color: #0d6efd;
     color: #0d6efd;
 }
 
-#pageNumbersContainer .btn-outline-primary:hover,
-#pageNumbersTopContainer .btn-outline-primary:hover,
-#pageNumbersBottomContainer .btn-outline-primary:hover {
+#pageButtonsTop .btn-outline-primary:hover,
+#pageButtonsBottom .btn-outline-primary:hover {
     background-color: #e7f1ff;
     border-color: #0b5ed7;
 }
 
-#pageNumbersContainer .btn-primary,
-#pageNumbersTopContainer .btn-primary,
-#pageNumbersBottomContainer .btn-primary {
+#pageButtonsTop .btn-primary,
+#pageButtonsBottom .btn-primary {
     background-color: #0d6efd;
     border-color: #0d6efd;
 }
@@ -222,11 +219,13 @@
         margin-bottom: 1rem;
     }
 
-    #pageNumbersContainer {
+    #pageButtonsTop,
+    #pageButtonsBottom {
         justify-content: center !important;
     }
 
-    #pageNumbersContainer .btn {
+    #pageButtonsTop .btn,
+    #pageButtonsBottom .btn {
         padding: 0.25rem 0.5rem;
         font-size: 0.875rem;
     }
