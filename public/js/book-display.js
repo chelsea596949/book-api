@@ -88,7 +88,7 @@ const BookDisplay = {
         if (response.meta && response.meta.pagination) {
             const pagination = response.meta.pagination;
             this.totalBooks = pagination.total || 0;
-            this.totalPages = pagination.pageCount || 1;
+            this.totalPages = pagination.lastPage || 1;
         }
 
         document.getElementById('bookCount').textContent = this.totalBooks;
