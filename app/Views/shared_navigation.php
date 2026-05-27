@@ -14,7 +14,7 @@
 
         <!-- Navigation Links -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav ms-auto align-items-center">
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('/') ?>" 
                        id="home-link">
@@ -26,6 +26,9 @@
                        id="books-link">
                         <i class="bi bi-book-fill"></i> Books
                     </a>
+                </li>
+                <li class="nav-item">
+                    <div id="auth-zone-navbar" class="auth-zone-navbar"></div>
                 </li>
             </ul>
         </div>
@@ -68,6 +71,32 @@
 
         .navbar-nav .nav-link:last-child {
             border-bottom: none;
+        }
+    }
+
+    .auth-zone-navbar {
+        padding-left: 1rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        margin-left: 0.5rem;
+    }
+
+    .auth-zone-navbar .btn {
+        white-space: nowrap;
+    }
+
+    @media (max-width: 991px) {
+        .auth-zone-navbar {
+            padding-left: 0;
+            border-left: none;
+            margin-left: 0;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+        }
+
+        .auth-zone-navbar .btn {
+            width: 100%;
         }
     }
 </style>
