@@ -13,16 +13,25 @@ const BookDisplay = {
 
     setupEventListeners: function() {
         // View toggle buttons
-        document.getElementById('gridViewBtn').addEventListener('click', () => this.switchView('grid'));
-        document.getElementById('listViewBtn').addEventListener('click', () => this.switchView('list'));
+        const gridViewBtn = document.getElementById('gridViewBtn');
+        const listViewBtn = document.getElementById('listViewBtn');
+        
+        if (gridViewBtn) gridViewBtn.addEventListener('click', () => this.switchView('grid'));
+        if (listViewBtn) listViewBtn.addEventListener('click', () => this.switchView('list'));
 
-        // Top pagination
-        document.getElementById('prevPageTopBtn').addEventListener('click', () => this.previousPage());
-        document.getElementById('nextPageTopBtn').addEventListener('click', () => this.nextPage());
+        // Top pagination buttons
+        const prevBtnTop = document.getElementById('prevBtnTop');
+        const nextBtnTop = document.getElementById('nextBtnTop');
+        
+        if (prevBtnTop) prevBtnTop.addEventListener('click', () => this.previousPage());
+        if (nextBtnTop) nextBtnTop.addEventListener('click', () => this.nextPage());
 
-        // Bottom pagination
-        document.getElementById('prevPageBottomBtn').addEventListener('click', () => this.previousPage());
-        document.getElementById('nextPageBottomBtn').addEventListener('click', () => this.nextPage());
+        // Bottom pagination buttons
+        const prevBtnBottom = document.getElementById('prevBtnBottom');
+        const nextBtnBottom = document.getElementById('nextBtnBottom');
+        
+        if (prevBtnBottom) prevBtnBottom.addEventListener('click', () => this.previousPage());
+        if (nextBtnBottom) nextBtnBottom.addEventListener('click', () => this.nextPage());
     },
 
     switchView: function(view) {
@@ -48,8 +57,8 @@ const BookDisplay = {
         document.getElementById('errorMessage').style.display = 'none';
         document.getElementById('gridContainer').innerHTML = '';
         document.getElementById('listContainer').innerHTML = '';
-        document.getElementById('paginationTopContainer').style.display = 'none';
-        document.getElementById('paginationBottomContainer').style.display = 'none';
+        document.getElementById('paginationTop').style.display = 'none';
+        document.getElementById('paginationBottom').style.display = 'none';
         document.getElementById('noResults').style.display = 'none';
 
         ApiService.getBooks(page, this.perPage)
@@ -161,43 +170,50 @@ const BookDisplay = {
     },
 
     updatePaginationUI: function(position) {
-        const paginationContainer = document.getElementById(`pagination${position}Container`);
-        const currentPageSpan = document.getElementById(`currentPage${position}`);
-        const totalPagesSpan = document.getElementById(`totalPages${position}`);
-        const pageNumbersContainer = document.getElementById(`pageNumbers${position}Container`);
-        const prevPageItem = document.getElementById(`prevPage${position}Item`);
-        const prevPageBtn = document.getElementById(`prevPage${position}Btn`);
-        const nextPageItem = document.getElementById(`nextPage${position}Item`);
-        const nextPageBtn = document.getElementById(`nextPage${position}Btn`);
+        const paginationId = `pagination${position}`;
+        const paginationContainer = document.getElementById(paginationId);
+        const pageInfoId = `pageInfo${position}`;
+        const pageInfoSpan = document.getElementById(pageInfoId);
+        const pageButtonsId = `pageButtons${position}`;
+        const pageButtonsContainer = document.getElementById(pageButtonsId);
+        const prevBtnId = `prevBtn${position}`;
+        const prevBtn = document.getElementById(prevBtnId);
+        const nextBtnId = `nextBtn${position}`;
+        const nextBtn = document.getElementById(nextBtnId);
 
-        // Update page numbers
-        currentPageSpan.textContent = this.currentPage;
-        totalPagesSpan.textContent = this.totalPages;
-
-        // Update prev button state
-        prevPageItem.classList.toggle('disabled', this.currentPage <= 1);
-        prevPageBtn.disabled = this.currentPage <= 1;
-
-        // Update next button state
-        nextPageItem.classList.toggle('disabled', this.currentPage >= this.totalPages);
-        nextPageBtn.disabled = this.currentPage >= this.totalPages;
-
-        // Generate page number buttons (show max 5 pages)
-        pageNumbersContainer.innerHTML = '';
-        const maxPageButtons = 5;
-        let startPage = Math.max(1, this.currentPage - Math.floor(maxPageButtons / 2));
-        let endPage = Math.min(this.totalPages, startPage + maxPageButtons - 1);
-
-        if (endPage - startPage < maxPageButtons - 1) {
-            startPage = Math.max(1, endPage - maxPageButtons + 1);
+        // Check if elements exist
+        if (!paginationContainer || !pageInfoSpan) {
+            console.warn(`Pagination elements for ${position} not found`);
+            return;
         }
 
-        for (let i = startPage; i <= endPage; i++) {
-            const btn = document.createElement('button');
-            btn.className = `btn btn-sm ${i === this.currentPage ? 'btn-primary' : 'btn-outline-primary'}`;
-            btn.textContent = i;
-            btn.addEventListener('click', () => this.loadBooks(i));
-            pageNumbersContainer.appendChild(btn);
+        // Update page info text
+        pageInfoSpan.textContent = `Page ${this.currentPage} of ${this.totalPages}`;
+
+        // Update prev button state
+        if (prevBtn) prevBtn.disabled = this.currentPage <= 1;
+
+        // Update next button state
+        if (nextBtn) nextBtn.disabled = this.currentPage >= this.totalPages;
+
+        // Generate page number buttons (show max 5 pages)
+        if (pageButtonsContainer) {
+            pageButtonsContainer.innerHTML = '';
+            const maxPageButtons = 5;
+            let startPage = Math.max(1, this.currentPage - Math.floor(maxPageButtons / 2));
+            let endPage = Math.min(this.totalPages, startPage + maxPageButtons - 1);
+
+            if (endPage - startPage < maxPageButtons - 1) {
+                startPage = Math.max(1, endPage - maxPageButtons + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.className = `btn btn-sm ${i === this.currentPage ? 'btn-primary' : 'btn-outline-primary'}`;
+                btn.textContent = i;
+                btn.addEventListener('click', () => this.loadBooks(i));
+                pageButtonsContainer.appendChild(btn);
+            }
         }
 
         // Show pagination if there's more than one page
