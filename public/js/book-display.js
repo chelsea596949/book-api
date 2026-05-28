@@ -119,7 +119,7 @@ const BookDisplay = {
             const bookCard = document.createElement('div');
             bookCard.className = 'col';
             bookCard.innerHTML = `
-                <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;">
+                <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;" target="_blank">
                     <div class="card h-100 shadow-sm book-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
                         <div class="book-image-wrapper" style="height: 250px; overflow: hidden; background-color: #f5f5f5;">
                             ${book.image_url 
@@ -145,7 +145,7 @@ const BookDisplay = {
         container.innerHTML = '';
 
         const listHTML = books.map(book => `
-            <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;">
+            <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;" target="_blank">
                 <div class="list-item border-bottom py-3 d-flex gap-3" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa';" onmouseout="this.style.backgroundColor='';">
                     <div style="min-width: 80px; height: 120px; background-color: #f5f5f5; flex-shrink: 0; overflow: hidden;">
                         ${book.image_url 
