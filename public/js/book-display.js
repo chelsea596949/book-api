@@ -119,20 +119,22 @@ const BookDisplay = {
             const bookCard = document.createElement('div');
             bookCard.className = 'col';
             bookCard.innerHTML = `
-                <div class="card h-100 shadow-sm book-card">
-                    <div class="book-image-wrapper" style="height: 250px; overflow: hidden; background-color: #f5f5f5;">
-                        ${book.image_url 
-                            ? `<img src="${this.escapeHtml(book.image_url)}" class="card-img-top" alt="${this.escapeHtml(book.title)}" style="height: 100%; width: 100%; object-fit: cover;">` 
-                            : `<div class="d-flex align-items-center justify-content-center h-100"><i class="bi bi-book text-secondary" style="font-size: 3rem;"></i></div>`
-                        }
+                <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;">
+                    <div class="card h-100 shadow-sm book-card" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='';">
+                        <div class="book-image-wrapper" style="height: 250px; overflow: hidden; background-color: #f5f5f5;">
+                            ${book.image_url 
+                                ? `<img src="${this.escapeHtml(book.image_url)}" class="card-img-top" alt="${this.escapeHtml(book.title)}" style="height: 100%; width: 100%; object-fit: cover;">` 
+                                : `<div class="d-flex align-items-center justify-content-center h-100"><i class="bi bi-book text-secondary" style="font-size: 3rem;"></i></div>`
+                            }
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${this.escapeHtml(book.title)}</h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                <small>by ${this.escapeHtml(book.author_name || 'Unknown Author')}</small>
+                            </p>
+                        </div>
                     </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">${this.escapeHtml(book.title)}</h5>
-                        <p class="card-text text-muted flex-grow-1">
-                            <small>by ${this.escapeHtml(book.author_name || 'Unknown Author')}</small>
-                        </p>
-                    </div>
-                </div>
+                </a>
             `;
             container.appendChild(bookCard);
         });
@@ -143,20 +145,22 @@ const BookDisplay = {
         container.innerHTML = '';
 
         const listHTML = books.map(book => `
-            <div class="list-item border-bottom py-3 d-flex gap-3">
-                <div style="min-width: 80px; height: 120px; background-color: #f5f5f5; flex-shrink: 0; overflow: hidden;">
-                    ${book.image_url 
-                        ? `<img src="${this.escapeHtml(book.image_url)}" alt="${this.escapeHtml(book.title)}" style="height: 100%; width: 100%; object-fit: cover;">` 
-                        : `<div class="d-flex align-items-center justify-content-center h-100"><i class="bi bi-book text-secondary"></i></div>`
-                    }
+            <a href="/books/detail/${book.id}" style="text-decoration: none; color: inherit;">
+                <div class="list-item border-bottom py-3 d-flex gap-3" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8f9fa';" onmouseout="this.style.backgroundColor='';">
+                    <div style="min-width: 80px; height: 120px; background-color: #f5f5f5; flex-shrink: 0; overflow: hidden;">
+                        ${book.image_url 
+                            ? `<img src="${this.escapeHtml(book.image_url)}" alt="${this.escapeHtml(book.title)}" style="height: 100%; width: 100%; object-fit: cover;">` 
+                            : `<div class="d-flex align-items-center justify-content-center h-100"><i class="bi bi-book text-secondary"></i></div>`
+                        }
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="mb-2">${this.escapeHtml(book.title)}</h5>
+                        <p class="mb-0 text-muted">
+                            <strong>Author:</strong> ${this.escapeHtml(book.author_name || 'Unknown Author')}
+                        </p>
+                    </div>
                 </div>
-                <div class="flex-grow-1">
-                    <h5 class="mb-2">${this.escapeHtml(book.title)}</h5>
-                    <p class="mb-0 text-muted">
-                        <strong>Author:</strong> ${this.escapeHtml(book.author_name || 'Unknown Author')}
-                    </p>
-                </div>
-            </div>
+            </a>
         `).join('');
 
         container.innerHTML = listHTML;
