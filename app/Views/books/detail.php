@@ -2,9 +2,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10">
-                <div class="mb-3">
-                    <a href="/" class="btn btn-secondary">← Back to Home</a>
-                </div>
                 <div class="card shadow-lg border-0">
                     <div class="row g-0">
                         <div class="col-md-5 d-flex align-items-center justify-content-centerp-4">
