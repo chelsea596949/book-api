@@ -53,7 +53,28 @@ class BookModel extends Model
     public function filterAuthorName(?string $name): self
     {
         if($name) {
-            $this->where('authors.name', $name);
+            $this->where('authors.name LIKE', '%' . $name . '%');
+        }
+
+        return $this;
+    }
+
+    public function filterTitle(?string $title): self
+    {
+        if($title) {
+            $this->like('books.title', $title);
+        }
+
+        return $this;
+    }
+
+    public function filterSearch(?string $search): self
+    {
+        if($search) {
+            $this->groupStart()
+                 ->like('books.title', $search)
+                 ->orLike('authors.name', $search)
+                 ->groupEnd();
         }
 
         return $this;

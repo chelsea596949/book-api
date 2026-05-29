@@ -5,6 +5,7 @@ const BookDisplay = {
     totalPages: 1,
     currentView: 'grid', // 'grid' or 'list'
     books: [],
+    searchQuery: '', // 儲存搜尋查詢
 
     init: function() {
         this.setupEventListeners();
@@ -32,6 +33,27 @@ const BookDisplay = {
         
         if (prevBtnBottom) prevBtnBottom.addEventListener('click', () => this.previousPage());
         if (nextBtnBottom) nextBtnBottom.addEventListener('click', () => this.nextPage());
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+
+        if (searchInput) {
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch();
+                }
+            });
+        }
+
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => this.performSearch());
+        }
+
+        if (clearSearchBtn) {
+            clearSearchBtn.addEventListener('click', () => this.clearSearch());
+        }
     },
 
     switchView: function(view) {
@@ -51,6 +73,23 @@ const BookDisplay = {
         this.renderBooks(this.books);
     },
 
+    performSearch: function() {
+        const searchInput = document.getElementById('searchInput');
+        this.searchQuery = searchInput ? searchInput.value.trim() : '';
+        this.currentPage = 1; // Reset to first page
+        this.loadBooks(1);
+    },
+
+    clearSearch: function() {
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.value = '';
+        }
+        this.searchQuery = '';
+        this.currentPage = 1;
+        this.loadBooks(1);
+    },
+
     loadBooks: function(page = 1) {
         this.currentPage = page;
         document.getElementById('loadingIndicator').style.display = 'block';
@@ -61,7 +100,7 @@ const BookDisplay = {
         document.getElementById('paginationBottom').style.display = 'none';
         document.getElementById('noResults').style.display = 'none';
 
-        ApiService.getBooks(page, this.perPage)
+        ApiService.getBooks(page, this.perPage, this.searchQuery)
             .done((response) => this.handleSuccess(response))
             .fail((error) => this.handleError(error));
     },

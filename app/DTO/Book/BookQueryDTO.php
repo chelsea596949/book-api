@@ -5,6 +5,8 @@ class BookQueryDTO
 {
     public ?string $authorName;
     public ?string $slug;
+    public ?string $title;
+    public ?string $search;
     public string $sort;
     public string $direction;
     public ?int $page;
@@ -14,6 +16,8 @@ class BookQueryDTO
     {
         $this->authorName = $data['authorName'] ?? null;
         $this->slug = $data['slug'] ?? null;
+        $this->title = $data['title'] ?? null;
+        $this->search = $data['search'] ?? null;
         $this->sort = $data['sort'] ?? 'id';
         $this->direction = $data['direction'] ?? 'asc';
         $this->page = isset($data['page']) ? (int)$data['page'] : null;

@@ -23,10 +23,11 @@ const ApiService = {
     },
 
     // 專門抓取書本資料
-    getBooks: function(page = null, perPage = null) {
+    getBooks: function(page = null, perPage = null, search = null) {
         const params = {};
         if (page !== null) params.page = page;
         if (perPage !== null) params.perPage = perPage;
+        if (search !== null && search !== '') params.search = search;
         return this.request('/books', 'GET', params);
     },
 

@@ -3,6 +3,27 @@
         <div class="col-12">
             <h1 class="display-5 fw-bold mb-3"><?= isset($title) ? esc($title) : 'Books Collection' ?></h1>
             
+            <!-- Search Bar -->
+            <div class="row mb-4">
+                <div class="col-12 col-md-8">
+                    <div class="input-group">
+                        <input 
+                            type="text" 
+                            class="form-control" 
+                            id="searchInput" 
+                            placeholder="Search by book title or author name..."
+                            autocomplete="off"
+                        >
+                        <button class="btn btn-primary" id="searchBtn" type="button">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                        <button class="btn btn-secondary" id="clearSearchBtn" type="button">
+                            <i class="bi bi-x"></i> Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
             <!-- View Toggle & Filters -->
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>

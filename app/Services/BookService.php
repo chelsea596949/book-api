@@ -24,6 +24,8 @@ class BookService {
             'id' => $id,
             'authorName' => $dto->authorName,
             'slug' => $dto->slug,
+            'title' => $dto->title,
+            'search' => $dto->search,
             'sort' => $dto->sort,
             'direction' => $dto->direction,
             'page' => $dto->page,
@@ -38,6 +40,8 @@ class BookService {
         $model
             ->withAuthorInfo()
             ->filterAuthorName($dto->authorName)
+            ->filterTitle($dto->title)
+            ->filterSearch($dto->search)
             ->filterSlug($dto->slug)
             ->sortBy($dto->sort, $dto->direction);
 
