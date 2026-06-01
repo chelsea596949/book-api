@@ -47,14 +47,24 @@
         <thead class="sticky-top bg-dark" style="z-index: 1;">
           <tr>
             <th scope="col">ID</th>
-            <th scope="col">Title</th>
+            <th scope="col" class="sortable-column" data-column="title" style="cursor: pointer; user-select: none;">
+              Title <span class="sort-indicator ms-1">⇅</span>
+            </th>
             <th scope="col">Image</th>
-            <th scope="col">Author</th>
-            <th scope="col">Year</th>
-            <th scope="col">Create Time</th>
+            <th scope="col" class="sortable-column" data-column="author_name" style="cursor: pointer; user-select: none;">
+              Author <span class="sort-indicator ms-1">⇅</span>
+            </th>
+            <th scope="col" class="sortable-column" data-column="year" style="cursor: pointer; user-select: none;">
+              Year <span class="sort-indicator ms-1">⇅</span>
+            </th>
+            <th scope="col" class="sortable-column" data-column="created_at" style="cursor: pointer; user-select: none;">
+              Create Time <span class="sort-indicator ms-1">⇅</span>
+            </th>
             <th scope="col">Update Time</th>
             <th scope="col">Slug</th>
-            <th scope="col">Price</th>
+            <th scope="col" class="sortable-column" data-column="price" style="cursor: pointer; user-select: none;">
+              Price <span class="sort-indicator ms-1">⇅</span>
+            </th>
             <th scope="col">Actions</th>
           </tr>
         </thead>

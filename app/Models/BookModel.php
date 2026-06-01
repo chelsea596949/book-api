@@ -100,8 +100,14 @@ class BookModel extends Model
 
     public function sortBy(?string $sort, ?string $direction='ASC'): self
     {
-        if($sort) {
-            $this->orderBy($sort, strtoupper($direction));
+        // Whitelist of allowed sortable columns
+        $allowedColumns = ['id', 'title', 'author_name', 'year', 'created_at', 'updated_at', 'price', 'slug'];
+        
+        // Only apply sort if column is in the whitelist
+        if($sort && in_array($sort, $allowedColumns)) {
+            // For author_name, we need to use the join alias
+            $column = $sort === 'author_name' ? 'authors.name' : 'books.' . $sort;
+            $this->orderBy($column, strtoupper($direction));
         }
         return $this;
     }

@@ -1,4 +1,7 @@
 let currentPage = 1;
+let currentSort = 'id';
+let currentDirection = 'asc';
+
 $(document).ready(function() {
     let page = 1;
     let perPage = 10;
@@ -23,6 +26,9 @@ $(document).ready(function() {
         $('#search-author').val('');
         $('#search-year').val('');
         currentPage = 1;
+        currentSort = 'id';
+        currentDirection = 'asc';
+        updateSortIndicators();
         renderBookList(1, perPage);
     });
 
@@ -32,6 +38,27 @@ $(document).ready(function() {
             e.preventDefault();
             $('#search-btn').click();
         }
+    });
+
+    // 可排序欄位的點擊事件
+    $('thead').on('click', '.sortable-column', function() {
+        const column = $(this).data('column');
+        
+        // 如果點擊同一欄位，切換排序方向；否則設為新欄位並預設 asc
+        if(currentSort === column) {
+            currentDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort = column;
+            currentDirection = 'asc';
+        }
+        
+        currentPage = 1; // 重置為第一頁
+        updateSortIndicators();
+        
+        const searchTitle = $('#search-title').val();
+        const searchAuthor = $('#search-author').val();
+        const searchYear = $('#search-year').val();
+        renderBookList(1, perPage, searchTitle, searchAuthor, searchYear);
     });
 
     $('#add-book-form').on('submit', function(e) {
@@ -325,7 +352,7 @@ $(document).on('click', '.delete-book-btn', function() {
 });
 
 function renderBookList(page, perPage, searchTitle = null, searchAuthor = null, searchYear = null) {
-    ApiService.getBooks(page, perPage, searchTitle, searchAuthor, searchYear).done(function(response) {
+    ApiService.getBooks(page, perPage, searchTitle, searchAuthor, searchYear, currentSort, currentDirection).done(function(response) {
         const books = Array.isArray(response) ? response : response.data;
         let html = '';
 
@@ -377,7 +404,7 @@ function renderBookList(page, perPage, searchTitle = null, searchAuthor = null, 
 // 加載所有可用的年份到選單
 function loadYearOptions() {
     // 獲取所有書籍來提取年份
-    ApiService.getBooks(null, null, null, null, null).done(function(response) {
+    ApiService.getBooks(null, null, null, null, null, currentSort, currentDirection).done(function(response) {
         const books = Array.isArray(response) ? response : response.data;
         const years = new Set();
         
@@ -404,6 +431,17 @@ function loadYearOptions() {
             $yearSelect.val(currentValue);
         }
     });
+}
+
+// 更新排序指示符號
+function updateSortIndicators() {
+    $('.sortable-column .sort-indicator').text('⇅');
+    
+    const $activeColumn = $(`.sortable-column[data-column="${currentSort}"]`);
+    if($activeColumn.length) {
+        const indicator = currentDirection === 'asc' ? '⇧' : '⇩';
+        $activeColumn.find('.sort-indicator').text(indicator);
+    }
 }
 
 // 渲染分頁按鈕的函式
