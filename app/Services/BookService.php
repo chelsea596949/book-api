@@ -26,6 +26,7 @@ class BookService {
             'slug' => $dto->slug,
             'title' => $dto->title,
             'search' => $dto->search,
+            'year' => $dto->year,
             'sort' => $dto->sort,
             'direction' => $dto->direction,
             'page' => $dto->page,
@@ -42,6 +43,7 @@ class BookService {
             ->filterAuthorName($dto->authorName)
             ->filterTitle($dto->title)
             ->filterSearch($dto->search)
+            ->filterYear($dto->year)
             ->filterSlug($dto->slug)
             ->sortBy($dto->sort, $dto->direction);
 

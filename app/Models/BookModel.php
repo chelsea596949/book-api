@@ -89,6 +89,15 @@ class BookModel extends Model
         return $this;
     }
 
+    public function filterYear(?int $year): self
+    {
+        if($year !== null) {
+            $this->where('books.year', $year);
+        }
+
+        return $this;
+    }
+
     public function sortBy(?string $sort, ?string $direction='ASC'): self
     {
         if($sort) {

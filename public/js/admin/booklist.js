@@ -2,7 +2,37 @@ let currentPage = 1;
 $(document).ready(function() {
     let page = 1;
     let perPage = 10;
+    
+    // 初始化年份選單
+    loadYearOptions();
+    
     renderBookList(page, perPage);
+
+    // 搜尋按鈕事件
+    $('#search-btn').on('click', function() {
+        currentPage = 1; // 重置為第一頁
+        const searchTitle = $('#search-title').val();
+        const searchAuthor = $('#search-author').val();
+        const searchYear = $('#search-year').val();
+        renderBookList(1, perPage, searchTitle, searchAuthor, searchYear);
+    });
+
+    // 重置按鈕事件
+    $('#reset-search-btn').on('click', function() {
+        $('#search-title').val('');
+        $('#search-author').val('');
+        $('#search-year').val('');
+        currentPage = 1;
+        renderBookList(1, perPage);
+    });
+
+    // 回車鍵觸發搜尋
+    $('#search-title, #search-author').on('keypress', function(e) {
+        if(e.which === 13) {
+            e.preventDefault();
+            $('#search-btn').click();
+        }
+    });
 
     $('#add-book-form').on('submit', function(e) {
         e.preventDefault(); // 阻止頁面跳轉
@@ -29,7 +59,8 @@ $(document).ready(function() {
             .done(function(response) {
                 // 新增書籍成功處理
                 if(response.status === 'success') {
-                    // 重新載入書籍列表
+                    // 重新載入年份選單和書籍列表
+                    loadYearOptions();
                     renderBookList(page, perPage);
                     // 關閉模態框
                     $('#addBookModal').modal('hide');
@@ -86,8 +117,12 @@ $(document).ready(function() {
             .done(function(response) {
                 // 編輯書籍成功處理
                 if(response.status === 'success') {
-                    // 重新載入書籍列表
-                    renderBookList(page, perPage);
+                    // 重新載入年份選單和書籍列表
+                    loadYearOptions();
+                    const searchTitle = $('#search-title').val();
+                    const searchAuthor = $('#search-author').val();
+                    const searchYear = $('#search-year').val();
+                    renderBookList(page, perPage, searchTitle || null, searchAuthor || null, searchYear || null);
                     // 關閉模態框
                     $('#editBookModal').modal('hide');
                     // 清空表單
@@ -123,11 +158,14 @@ $(document).ready(function() {
     $('#pagination-container').on('click', '.page-link', function(e) {
         e.preventDefault();
         const targetPage = $(this).data('page');
+        const searchTitle = $(this).data('title');
+        const searchAuthor = $(this).data('author');
+        const searchYear = $(this).data('year');
         
         // 如果按鈕沒被禁用且頁碼有效
         if(targetPage && !$(this).parent().hasClass('disabled') && targetPage !== currentPage) {
             currentPage = targetPage;
-            renderBookList(currentPage, perPage); // 重新呼叫抓取資料函式
+            renderBookList(currentPage, perPage, searchTitle || null, searchAuthor || null, searchYear || null);
         }
     });
 
@@ -159,7 +197,11 @@ $(document).ready(function() {
         ApiService.editBook(formData, bookId)
             .done(function(response) {
                 if(response.status === 'success') {
-                    renderBookList(currentPage, 10);
+                    loadYearOptions();
+                    const searchTitle = $('#search-title').val();
+                    const searchAuthor = $('#search-author').val();
+                    const searchYear = $('#search-year').val();
+                    renderBookList(currentPage, 10, searchTitle || null, searchAuthor || null, searchYear || null);
                     $('#editImageModal').modal('hide');
                     $form[0].reset();
                 }
@@ -255,8 +297,12 @@ $(document).on('click', '.delete-book-btn', function() {
         ApiService.deleteBook(bookId)
             .done(function(response) {
                 if(response.status === 'success') {
-                    // 重新載入書籍列表
-                    renderBookList(currentPage, 10);
+                    // 重新載入年份選單和書籍列表
+                    loadYearOptions();
+                    const searchTitle = $('#search-title').val();
+                    const searchAuthor = $('#search-author').val();
+                    const searchYear = $('#search-year').val();
+                    renderBookList(currentPage, 10, searchTitle || null, searchAuthor || null, searchYear || null);
                 }
             })
             .fail(function(xhr) {
@@ -278,8 +324,8 @@ $(document).on('click', '.delete-book-btn', function() {
     }
 });
 
-function renderBookList(page, perPage) {
-    ApiService.getBooks(page, perPage).done(function(response) {
+function renderBookList(page, perPage, searchTitle = null, searchAuthor = null, searchYear = null) {
+    ApiService.getBooks(page, perPage, searchTitle, searchAuthor, searchYear).done(function(response) {
         const books = Array.isArray(response) ? response : response.data;
         let html = '';
 
@@ -323,13 +369,45 @@ function renderBookList(page, perPage) {
 
         if(response.meta && response.meta.pagination) {
             currentPage = response.meta.pagination.page;
-            renderPagination(response.meta.pagination.page, response.meta.pagination.lastPage);
+            renderPagination(response.meta.pagination.page, response.meta.pagination.lastPage, searchTitle, searchAuthor, searchYear);
+        }
+    });
+}
+
+// 加載所有可用的年份到選單
+function loadYearOptions() {
+    // 獲取所有書籍來提取年份
+    ApiService.getBooks(null, null, null, null, null).done(function(response) {
+        const books = Array.isArray(response) ? response : response.data;
+        const years = new Set();
+        
+        books.forEach(book => {
+            if(book.year) {
+                years.add(book.year);
+            }
+        });
+        
+        // 排序年份（由新到舊）
+        const sortedYears = Array.from(years).sort((a, b) => b - a);
+        
+        // 填充選單
+        const $yearSelect = $('#search-year');
+        const currentValue = $yearSelect.val();
+        
+        $yearSelect.html('<option value="">All Years</option>');
+        sortedYears.forEach(year => {
+            $yearSelect.append(`<option value="${year}">${year}</option>`);
+        });
+        
+        // 恢復之前的選擇
+        if(currentValue) {
+            $yearSelect.val(currentValue);
         }
     });
 }
 
 // 渲染分頁按鈕的函式
-function renderPagination(currentPage, totalPages) {
+function renderPagination(currentPage, totalPages, searchTitle = null, searchAuthor = null, searchYear = null) {
     const $container = $('#pagination-container');
     $container.empty();
 
@@ -337,7 +415,7 @@ function renderPagination(currentPage, totalPages) {
     const prevDisabled = currentPage === 1 ? 'disabled' : '';
     $container.append(`
         <li class="page-item ${prevDisabled}">
-            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPage - 1}">Previous</a>
+            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPage - 1}" data-title="${searchTitle || ''}" data-author="${searchAuthor || ''}" data-year="${searchYear || ''}">Previous</a>
         </li>
     `);
 
@@ -348,7 +426,7 @@ function renderPagination(currentPage, totalPages) {
         
         $container.append(`
             <li class="page-item ${activeClass}">
-                <a class="page-link ${activeStyle}" href="#" data-page="${i}">${i}</a>
+                <a class="page-link ${activeStyle}" href="#" data-page="${i}" data-title="${searchTitle || ''}" data-author="${searchAuthor || ''}" data-year="${searchYear || ''}">${i}</a>
             </li>
         `);
     }
@@ -357,7 +435,7 @@ function renderPagination(currentPage, totalPages) {
     const nextDisabled = currentPage === totalPages ? 'disabled' : '';
     $container.append(`
         <li class="page-item ${nextDisabled}">
-            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPage + 1}">Next</a>
+            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPage + 1}" data-title="${searchTitle || ''}" data-author="${searchAuthor || ''}" data-year="${searchYear || ''}">Next</a>
         </li>
     `);
 }
