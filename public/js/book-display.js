@@ -5,7 +5,8 @@ const BookDisplay = {
     totalPages: 1,
     currentView: 'grid', // 'grid' or 'list'
     books: [],
-    searchQuery: '', // 儲存搜尋查詢
+    searchTitle: '',    // 儲存書籍名稱搜尋
+    searchAuthor: '',   // 儲存作者名稱搜尋
 
     init: function() {
         this.setupEventListeners();
@@ -35,12 +36,23 @@ const BookDisplay = {
         if (nextBtnBottom) nextBtnBottom.addEventListener('click', () => this.nextPage());
 
         // Search functionality
-        const searchInput = document.getElementById('searchInput');
+        const searchTitleInput = document.getElementById('searchTitleInput');
+        const searchAuthorInput = document.getElementById('searchAuthorInput');
         const searchBtn = document.getElementById('searchBtn');
         const clearSearchBtn = document.getElementById('clearSearchBtn');
 
-        if (searchInput) {
-            searchInput.addEventListener('keypress', (e) => {
+        // Title input - Enter key support
+        if (searchTitleInput) {
+            searchTitleInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.performSearch();
+                }
+            });
+        }
+
+        // Author input - Enter key support
+        if (searchAuthorInput) {
+            searchAuthorInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     this.performSearch();
                 }
@@ -74,18 +86,29 @@ const BookDisplay = {
     },
 
     performSearch: function() {
-        const searchInput = document.getElementById('searchInput');
-        this.searchQuery = searchInput ? searchInput.value.trim() : '';
+        const searchTitleInput = document.getElementById('searchTitleInput');
+        const searchAuthorInput = document.getElementById('searchAuthorInput');
+        
+        this.searchTitle = searchTitleInput ? searchTitleInput.value.trim() : '';
+        this.searchAuthor = searchAuthorInput ? searchAuthorInput.value.trim() : '';
+        
         this.currentPage = 1; // Reset to first page
         this.loadBooks(1);
     },
 
     clearSearch: function() {
-        const searchInput = document.getElementById('searchInput');
-        if (searchInput) {
-            searchInput.value = '';
+        const searchTitleInput = document.getElementById('searchTitleInput');
+        const searchAuthorInput = document.getElementById('searchAuthorInput');
+        
+        if (searchTitleInput) {
+            searchTitleInput.value = '';
         }
-        this.searchQuery = '';
+        if (searchAuthorInput) {
+            searchAuthorInput.value = '';
+        }
+        
+        this.searchTitle = '';
+        this.searchAuthor = '';
         this.currentPage = 1;
         this.loadBooks(1);
     },
@@ -100,7 +123,7 @@ const BookDisplay = {
         document.getElementById('paginationBottom').style.display = 'none';
         document.getElementById('noResults').style.display = 'none';
 
-        ApiService.getBooks(page, this.perPage, this.searchQuery)
+        ApiService.getBooks(page, this.perPage, this.searchTitle, this.searchAuthor)
             .done((response) => this.handleSuccess(response))
             .fail((error) => this.handleError(error));
     },

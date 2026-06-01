@@ -5,21 +5,51 @@
             
             <!-- Search Bar -->
             <div class="row mb-4">
-                <div class="col-12 col-md-8">
-                    <div class="input-group">
-                        <input 
-                            type="text" 
-                            class="form-control" 
-                            id="searchInput" 
-                            placeholder="Search by book title or author name..."
-                            autocomplete="off"
-                        >
-                        <button class="btn btn-primary" id="searchBtn" type="button">
-                            <i class="bi bi-search"></i> Search
-                        </button>
-                        <button class="btn btn-secondary" id="clearSearchBtn" type="button">
-                            <i class="bi bi-x"></i> Clear
-                        </button>
+                <div class="col-12">
+                    <div class="row g-3">
+                        <!-- Search by Title -->
+                        <div class="col-12 col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-book"></i> Title
+                                </span>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="searchTitleInput" 
+                                    placeholder="Search book title..."
+                                    autocomplete="off"
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Search by Author -->
+                        <div class="col-12 col-md-5">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="bi bi-person"></i> Author
+                                </span>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="searchAuthorInput" 
+                                    placeholder="Search author name..."
+                                    autocomplete="off"
+                                >
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="col-12 col-md-2">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-primary flex-grow-1" id="searchBtn" type="button">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                                <button class="btn btn-secondary" id="clearSearchBtn" type="button" title="Clear all">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
