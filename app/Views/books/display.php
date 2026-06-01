@@ -45,8 +45,8 @@
                                 <button class="btn btn-primary flex-grow-1" id="searchBtn" type="button">
                                     <i class="bi bi-search"></i> Search
                                 </button>
-                                <button class="btn btn-secondary" id="clearSearchBtn" type="button" title="Clear all">
-                                    <i class="bi bi-x"></i>
+                                <button class="btn btn-secondary flex-grow-1" id="clearSearchBtn" type="button" title="Clear all">
+                                    <i class="bi bi-x"></i> Clear
                                 </button>
                             </div>
                         </div>
