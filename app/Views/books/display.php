@@ -5,48 +5,38 @@
             
             <!-- Search Bar -->
             <div class="row mb-4">
-                <div class="col-12 col-lg-10">
+                <div class="col-12 col-md-8">
                     <div class="row g-2">
                         <!-- Search by Title -->
-                        <div class="col-12 col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-book"></i> Title
-                                </span>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="searchTitleInput" 
-                                    placeholder="Search book title..."
-                                    autocomplete="off"
-                                >
-                            </div>
+                        <div class="col-12 col-md-5">
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm" 
+                                id="searchTitleInput" 
+                                placeholder="Title..."
+                                autocomplete="off"
+                            >
                         </div>
                         
                         <!-- Search by Author -->
-                        <div class="col-12 col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-text">
-                                    <i class="bi bi-person"></i> Author
-                                </span>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="searchAuthorInput" 
-                                    placeholder="Search author name..."
-                                    autocomplete="off"
-                                >
-                            </div>
+                        <div class="col-12 col-md-5">
+                            <input 
+                                type="text" 
+                                class="form-control form-control-sm" 
+                                id="searchAuthorInput" 
+                                placeholder="Author..."
+                                autocomplete="off"
+                            >
                         </div>
                         
                         <!-- Action Buttons -->
-                        <div class="col-12 col-md-4">
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-primary flex-grow-1" id="searchBtn" type="button">
-                                    <i class="bi bi-search"></i> Search
+                        <div class="col-12 col-md-2">
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-primary" id="searchBtn" type="button" title="Search">
+                                    <i class="bi bi-search"></i>
                                 </button>
-                                <button class="btn btn-secondary flex-grow-1" id="clearSearchBtn" type="button" title="Clear all">
-                                    <i class="bi bi-x"></i> Clear
+                                <button class="btn btn-sm btn-secondary" id="clearSearchBtn" type="button" title="Clear all">
+                                    <i class="bi bi-x"></i>
                                 </button>
                             </div>
                         </div>
