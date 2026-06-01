@@ -5,10 +5,10 @@
             
             <!-- Search Bar -->
             <div class="row mb-4">
-                <div class="col-12">
-                    <div class="row g-3">
+                <div class="col-12 col-lg-10">
+                    <div class="row g-2">
                         <!-- Search by Title -->
-                        <div class="col-12 col-md-5">
+                        <div class="col-12 col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="bi bi-book"></i> Title
@@ -24,7 +24,7 @@
                         </div>
                         
                         <!-- Search by Author -->
-                        <div class="col-12 col-md-5">
+                        <div class="col-12 col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="bi bi-person"></i> Author
@@ -40,7 +40,7 @@
                         </div>
                         
                         <!-- Action Buttons -->
-                        <div class="col-12 col-md-2">
+                        <div class="col-12 col-md-4">
                             <div class="d-flex gap-2">
                                 <button class="btn btn-primary flex-grow-1" id="searchBtn" type="button">
                                     <i class="bi bi-search"></i> Search
