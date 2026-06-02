@@ -20,6 +20,8 @@ $routes->post('api/register', 'Api\Auth::register');
 $routes->get('api/books', 'Api\Books::getIndex');
 $routes->get('api/books/(:num)', 'Api\Books::getIndex/$1');
 $routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
+    // Delete user account
+    $routes->post('delete-account', 'Api\Auth::delete');
     // admin only
     $routes->group('', ['filter' => 'role:1'], function($routes) {
         $routes->post('books', 'Api\Books::postIndex');

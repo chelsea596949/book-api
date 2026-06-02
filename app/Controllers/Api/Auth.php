@@ -36,4 +36,21 @@ class Auth extends BaseController
 
         return api_response($this->response, $result);
     }
+
+    public function delete()
+    {
+        $uid = $this->request->getPost('uid');
+
+        if(!$uid) {
+            return api_response(
+                $this->response,
+                api_error('User ID is required', [], 400)
+            );
+        }
+
+        $service = service('authService');
+        $result = $service->deleteUser($uid);
+
+        return api_response($this->response, $result);
+    }
 }

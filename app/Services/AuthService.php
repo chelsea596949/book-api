@@ -65,4 +65,23 @@ class AuthService
             return api_error('Failed to register user', [], 500);
         }
     }
+
+    public function deleteUser(string $uid)
+    {
+        $model = model('UserModel');
+
+        $user = $model->where('uid', $uid)->first();
+
+        if(!$user) {
+            return api_error('User not found', [], 404);
+        }
+
+        $result = $model->delete($uid);
+
+        if($result) {
+            return api_success('User deleted successfully', []);
+        } else {
+            return api_error('Failed to delete user', [], 500);
+        }
+    }
 }

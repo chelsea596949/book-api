@@ -10,9 +10,9 @@ class UserModel extends Model
     protected $primaryKey       = 'uid';
     protected $useAutoIncrement = false;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
-    protected $allowedFields    = ['password', 'created_at', 'updated_at', 'name', 'level'];
+    protected $allowedFields    = ['password', 'created_at', 'updated_at', 'name', 'level', 'deleted_at'];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -21,7 +21,7 @@ class UserModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
