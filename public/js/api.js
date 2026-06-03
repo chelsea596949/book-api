@@ -82,10 +82,11 @@ const ApiService = {
     },
 
     // 取得 level=2 會員列表（管理員）
-    getUsers: function(page = null, perPage = null) {
+    getUsers: function(page = null, perPage = null, searchUid = null) {
         const params = {};
         if(page !== null) params.page = page;
         if(perPage !== null) params.perPage = perPage;
+        if(searchUid !== null && searchUid !== '') params.uid = searchUid;
         return this.request('/users', 'GET', params);
     },
 

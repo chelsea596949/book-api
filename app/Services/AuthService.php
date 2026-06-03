@@ -66,11 +66,12 @@ class AuthService
         }
     }
 
-    public function listMembers(?int $page, ?int $perPage): array
+    public function listMembers(?int $page, ?int $perPage, ?string $uid = null): array
     {
         $model = model('UserModel');
         $model->where('level', 2)
-            ->select('uid, name, level, created_at, updated_at');
+            ->select('uid, name, level, created_at, updated_at')
+            ->filterUid($uid);
 
         if($page !== null && $perPage !== null) {
             $users = $model->paginate($perPage, 'default', $page);

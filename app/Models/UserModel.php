@@ -43,4 +43,13 @@ class UserModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    public function filterUid(?string $uid): self
+    {
+        if($uid) {
+            $this->like('uid', $uid);
+        }
+
+        return $this;
+    }
 }

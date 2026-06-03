@@ -5,13 +5,33 @@ $(document).ready(function() {
 
     renderUserList(1, perPage);
 
+    $('#search-btn').on('click', function() {
+        currentPage = 1;
+        const searchUid = $('#search-uid').val();
+        renderUserList(1, perPage, searchUid);
+    });
+
+    $('#reset-search-btn').on('click', function() {
+        $('#search-uid').val('');
+        currentPage = 1;
+        renderUserList(1, perPage);
+    });
+
+    $('#search-uid').on('keypress', function(e) {
+        if(e.which === 13) {
+            e.preventDefault();
+            $('#search-btn').click();
+        }
+    });
+
     $('#pagination-container').on('click', '.page-link', function(e) {
         e.preventDefault();
         const targetPage = $(this).data('page');
 
         if(targetPage && !$(this).parent().hasClass('disabled') && targetPage !== currentPage) {
             currentPage = targetPage;
-            renderUserList(currentPage, perPage);
+            const searchUid = $(this).data('uid');
+            renderUserList(currentPage, perPage, searchUid || null);
         }
     });
 });
@@ -31,7 +51,8 @@ $(document).on('click', '.delete-user-btn', function() {
     ApiService.deleteUser(uid)
         .done(function(response) {
             if(response.status === 'success') {
-                renderUserList(currentPage, 10);
+                const searchUid = $('#search-uid').val();
+                renderUserList(currentPage, 10, searchUid || null);
             }
         })
         .fail(function(xhr) {
@@ -62,15 +83,15 @@ function escapeHtml(text) {
         .replace(/'/g, '&#039;');
 }
 
-function renderUserList(page, perPage) {
-    ApiService.getUsers(page, perPage).done(function(response) {
+function renderUserList(page, perPage, searchUid = null) {
+    ApiService.getUsers(page, perPage, searchUid).done(function(response) {
         const users = Array.isArray(response) ? response : response.data;
         let html = '';
 
         if(!users || users.length === 0) {
             html = `
                 <tr>
-                    <td colspan="6" class="text-muted py-4">No members found.</td>
+                    <td colspan="5" class="text-muted py-4">No members found.</td>
                 </tr>`;
         } else {
             users.forEach(user => {
@@ -96,7 +117,7 @@ function renderUserList(page, perPage) {
 
         if(response.meta && response.meta.pagination) {
             currentPage = response.meta.pagination.page;
-            renderPagination(response.meta.pagination.page, response.meta.pagination.lastPage);
+            renderPagination(response.meta.pagination.page, response.meta.pagination.lastPage, searchUid);
         }
     }).fail(function(xhr) {
         const response = xhr.responseJSON;
@@ -108,19 +129,19 @@ function renderUserList(page, perPage) {
 
         $('#user-table-body').html(`
             <tr>
-                <td colspan="6" class="text-danger py-4">${escapeHtml(message)}</td>
+                <td colspan="5" class="text-danger py-4">${escapeHtml(message)}</td>
             </tr>`);
     });
 }
 
-function renderPagination(currentPageNum, totalPages) {
+function renderPagination(currentPageNum, totalPages, searchUid = null) {
     const $container = $('#pagination-container');
     $container.empty();
 
     const prevDisabled = currentPageNum === 1 ? 'disabled' : '';
     $container.append(`
         <li class="page-item ${prevDisabled}">
-            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPageNum - 1}">Previous</a>
+            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPageNum - 1}" data-uid="${searchUid || ''}">Previous</a>
         </li>
     `);
 
@@ -130,7 +151,7 @@ function renderPagination(currentPageNum, totalPages) {
 
         $container.append(`
             <li class="page-item ${activeClass}">
-                <a class="page-link ${activeStyle}" href="#" data-page="${i}">${i}</a>
+                <a class="page-link ${activeStyle}" href="#" data-page="${i}" data-uid="${searchUid || ''}">${i}</a>
             </li>
         `);
     }
@@ -138,7 +159,7 @@ function renderPagination(currentPageNum, totalPages) {
     const nextDisabled = currentPageNum === totalPages ? 'disabled' : '';
     $container.append(`
         <li class="page-item ${nextDisabled}">
-            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPageNum + 1}">Next</a>
+            <a class="page-link bg-dark text-white border-secondary" href="#" data-page="${currentPageNum + 1}" data-uid="${searchUid || ''}">Next</a>
         </li>
     `);
 }

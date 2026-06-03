@@ -41,11 +41,13 @@ class Auth extends BaseController
     {
         $page = $this->request->getGet('page');
         $perPage = $this->request->getGet('perPage');
+        $uid = $this->request->getGet('uid');
 
         $service = service('authService');
         $result = $service->listMembers(
             $page !== null && $page !== '' ? (int) $page : null,
-            $perPage !== null && $perPage !== '' ? (int) $perPage : null
+            $perPage !== null && $perPage !== '' ? (int) $perPage : null,
+            $uid !== null && $uid !== '' ? (string) $uid : null
         );
 
         return api_response($this->response, $result);
