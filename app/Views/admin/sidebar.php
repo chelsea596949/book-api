@@ -13,5 +13,11 @@
             href="/admin/booklist">
             Books Management
             </a>
+
+            <a class="list-group-item list-group-item-action border-secondary p-3 
+            <?= (str_contains($_SERVER['REQUEST_URI'], '/admin/userlist')) ? 'active bg-white text-black-50' : ' bg-dark text-white-50' ?>" 
+            href="/admin/userlist">
+            Member Management
+            </a>
         </div>
     </div>

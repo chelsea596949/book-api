@@ -2,16 +2,19 @@ const ApiService = {
     baseUrl: '/api',
 
     request: function(endpoint, method='GET', data=null) {
-        // 初始化基礎 AJAX 設定
+        const token = localStorage.getItem('auth_token');
         const ajaxConfig = {
             url: this.baseUrl + endpoint,
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('jwt_token')
-            },
             method: method,
             data: data,
             dataType: 'json'
         };
+
+        if(token) {
+            ajaxConfig.headers = {
+                'Authorization': 'Bearer ' + token
+            };
+        }
 
         // 自動偵測：如果 data 是 FormData 物件（通常用於檔案上傳）
         if(data instanceof FormData) {
@@ -76,6 +79,19 @@ const ApiService = {
     // 註冊
     register: function(data) {
         return this.request('/register', 'POST', data);
+    },
+
+    // 取得 level=2 會員列表（管理員）
+    getUsers: function(page = null, perPage = null) {
+        const params = {};
+        if(page !== null) params.page = page;
+        if(perPage !== null) params.perPage = perPage;
+        return this.request('/users', 'GET', params);
+    },
+
+    // 刪除使用者（管理員）
+    deleteUser: function(uid) {
+        return this.request(`/users/${uid}`, 'DELETE');
     }
 };
 

@@ -66,6 +66,24 @@ class AuthService
         }
     }
 
+    public function listMembers(?int $page, ?int $perPage): array
+    {
+        $model = model('UserModel');
+        $model->where('level', 2)
+            ->select('uid, name, level, created_at, updated_at');
+
+        if($page !== null && $perPage !== null) {
+            $users = $model->paginate($perPage, 'default', $page);
+            $meta = api_pagination($model->pager, $perPage);
+
+            return api_success('', $users, ['pagination' => $meta]);
+        }
+
+        $users = $model->findAll();
+
+        return api_success('', $users);
+    }
+
     public function deleteUser(string $uid)
     {
         $model = model('UserModel');

@@ -20,10 +20,10 @@ $routes->post('api/register', 'Api\Auth::register');
 $routes->get('api/books', 'Api\Books::getIndex');
 $routes->get('api/books/(:num)', 'Api\Books::getIndex/$1');
 $routes->group('api', ['filter' => ['jwt', 'throttle']], function($routes) {
-    // Delete user account
-    $routes->delete('users/(:any)', 'Api\Auth::delete/$1');
     // admin only
     $routes->group('', ['filter' => 'role:1'], function($routes) {
+        $routes->get('users', 'Api\Auth::index');
+        $routes->delete('users/(:any)', 'Api\Auth::delete/$1');
         $routes->post('books', 'Api\Books::postIndex');
         $routes->put('books/(:num)', 'Api\Books::putIndex/$1');
         $routes->delete('books/(:num)', 'Api\Books::deleteIndex/$1');
@@ -40,4 +40,5 @@ $routes->group('admin', ['filter' => ['jwt', 'role:1']], function($routes) {
     $routes->get('', [AdminPage::class, 'index']);
     $routes->get('index', [AdminPage::class, 'index']);
     $routes->get('booklist', [AdminPage::class, 'booklist']);
+    $routes->get('userlist', [AdminPage::class, 'userlist']);
 });

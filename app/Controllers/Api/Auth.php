@@ -37,12 +37,34 @@ class Auth extends BaseController
         return api_response($this->response, $result);
     }
 
+    public function index()
+    {
+        $page = $this->request->getGet('page');
+        $perPage = $this->request->getGet('perPage');
+
+        $service = service('authService');
+        $result = $service->listMembers(
+            $page !== null && $page !== '' ? (int) $page : null,
+            $perPage !== null && $perPage !== '' ? (int) $perPage : null
+        );
+
+        return api_response($this->response, $result);
+    }
+
     public function delete($uid = null)
     {
         if(!$uid) {
             return api_response(
                 $this->response,
                 api_error('User ID is required', [], 400)
+            );
+        }
+
+        $currentUid = $this->request->user['uid'] ?? null;
+        if($currentUid !== null && $currentUid === $uid) {
+            return api_response(
+                $this->response,
+                api_error('Cannot delete your own account', [], 403)
             );
         }
 
