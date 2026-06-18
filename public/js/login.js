@@ -26,6 +26,7 @@ $(document).ready(function() {
                     if(response.data.token) {
                         localStorage.setItem('auth_token', response.data.token);
                         localStorage.setItem('uid', response.data.uid);
+                        localStorage.setItem('level', response.data.level);
                         localStorage.setItem('login_iat', response.data.iat);
                         localStorage.setItem('login_exp', response.data.exp);
                         

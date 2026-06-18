@@ -9,14 +9,15 @@ function initSharedHeader() {
 
     // 檢查 token 是否存在且未過期
     if(token && exp && isTokenValid(exp)) {
-        // 從 localStorage 讀取儲存的用戶名
+        // 從localStorage讀取儲存的用戶名
         const username = localStorage.getItem('uid') || 'User';
-        renderWelcome(username, $authZone);
-        renderWelcomeNavbar(username, $navbarAuthZone);
-    } else {
-        // token 過期或不存在，清除 localStorage
+        const level = localStorage.getItem('level') || '2';
+        // renderWelcome(username, $authZone);
+        renderWelcomeNavbar(username, level, $navbarAuthZone);
+    }else {
+        // token過期或不存在, 清除localStorage
         clearAuthData();
-        renderLoginButton($authZone);
+        // renderLoginButton($authZone);
         renderLoginButtonNavbar($navbarAuthZone);
     }
 
@@ -45,38 +46,38 @@ function clearAuthData() {
 }
 
 // 渲染歡迎介面 (固定位置版本)
-function renderWelcome(name, $authZone) {
-    $authZone.html(`
-        <div class="d-flex align-items-center gap-2">
-            <span class="text-white-50">
-                Welcome, <strong class="text-white">${name}</strong>
-            </span>
-            <a class="btn btn-sm btn-outline-info px-2" href="/admin">Admin</a>
-            <button id="logout-btn" class="btn btn-sm btn-outline-light px-2">Logout</button>
-        </div>
-    `);
-}
+// function renderWelcome(name, $authZone) {
+//     $authZone.html(`
+//         <div class="d-flex align-items-center gap-2">
+//             <span class="text-white-50">
+//                 Welcome, <strong class="text-white">${name}</strong>
+//             </span>
+//             <a class="btn btn-sm btn-outline-info px-2" href="/admin">Admin</a>
+//             <button id="logout-btn" class="btn btn-sm btn-outline-light px-2">Logout</button>
+//         </div>
+//     `);
+// }
 
 // 渲染歡迎介面 (導覽列版本)
-function renderWelcomeNavbar(name, $navbarAuthZone) {
+function renderWelcomeNavbar(name, level, $navbarAuthZone) {
     $navbarAuthZone.html(`
         <div class="d-flex align-items-center gap-2 w-100">
             <span class="text-white-50">
                 Welcome, <strong class="text-white">${name}</strong>
             </span>
-            <a class="btn btn-sm btn-outline-info px-2" href="/admin">Admin</a>
+            ${level === '1' ? '<a class="btn btn-sm btn-outline-info px-2" href="/admin">Admin</a>' : ''}
             <button id="logout-btn-navbar" class="btn btn-sm btn-outline-light px-2">Logout</button>
         </div>
     `);
 }
 
 // 渲染登入按鈕 (預設狀態 - 固定位置版本)
-function renderLoginButton($authZone) {
-    $authZone.html(`
-        <a href="/users/register" class="btn btn-outline-light px-4">SIGN UP</a>
-        <a href="/users/login" class="btn btn-outline-light px-4">LOG IN</a>
-    `);
-}
+// function renderLoginButton($authZone) {
+//     $authZone.html(`
+//         <a href="/users/register" class="btn btn-outline-light px-4">SIGN UP</a>
+//         <a href="/users/login" class="btn btn-outline-light px-4">LOG IN</a>
+//     `);
+// }
 
 // 渲染登入按鈕 (預設狀態 - 導覽列版本)
 function renderLoginButtonNavbar($navbarAuthZone) {
